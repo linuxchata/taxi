@@ -6,7 +6,7 @@ namespace Taxi.Domain
     public sealed class Driver
     {
         [JsonProperty(PropertyName = "id")]
-        public Guid Id { get; set; }
+        public string Id { get; set; } = null!;
 
         [JsonProperty(PropertyName = "pk")]
         public string Pk { get; set; } = null!;
@@ -19,5 +19,11 @@ namespace Taxi.Domain
 
         [JsonProperty(PropertyName = "state")]
         public string State { get; set; } = null!;
+
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; } = null!;
+
+        [JsonProperty(PropertyName = "version")]
+        public int Version { get; set; }
     }
 }

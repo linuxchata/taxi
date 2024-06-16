@@ -26,20 +26,19 @@ public class DriverController(IMediator _mediator) : ControllerBase
         return Ok(response);
     }
 
-    [HttpPut("{id}/{state}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<List<string>>> Update(
-        [FromRoute] Guid id,
-        [FromRoute] string state,
+        [FromRoute] string id,
         [FromBody][NotNull] UpdateDriverRequest request)
     {
-        await _mediator.Send(new UpdateDriverCommand(id, state, request));
+        await _mediator.Send(new UpdateDriverCommand(id, request));
         return NoContent();
     }
 
-    [HttpDelete("{id}/{state}")]
-    public async Task<ActionResult<List<string>>> Delete([FromRoute] Guid id, [FromRoute] string state)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<List<string>>> Delete([FromRoute] string id)
     {
-        await _mediator.Send(new DeleteDriverCommand(id, state));
+        await _mediator.Send(new DeleteDriverCommand(id));
         return NoContent();
     }
 }

@@ -14,6 +14,10 @@ namespace Taxi.Repository
 
         private const string Container = "people";
 
+        private const string Type = "Driver";
+
+        private const int Version = 1;
+
         private readonly IConfiguration _configuration;
 
         public DriverRepository(IConfiguration configuration)
@@ -40,36 +44,33 @@ namespace Taxi.Repository
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
-            driver.Id = Guid.NewGuid();
-            driver.Pk = GetPartitionKey(driver.State);
+            driver.Id = Guid.NewGuid().ToString().ToLower();
+            driver.Pk = driver.Id;
+            driver.Version = Version;
+            driver.Type = Type;
 
             var response = await container.CreateItemAsync<Driver>(driver);
 
             return response.Resource.Id.ToString();
         }
 
-        public async Task Update(Guid id, string state, Driver driver)
+        public async Task Update(string id, Driver driver)
         {
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
-            driver.Id = id;
-            driver.Pk = GetPartitionKey(driver.State);
+            driver.Id = id.ToString().ToLower();
+            driver.Pk = id.ToString().ToLower();
             await container.ReplaceItemAsync<Driver>(driver, id.ToString());
         }
 
-        public async Task Delete(Guid id, string state)
+        public async Task Delete(string id)
         {
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
-            var pk = GetPartitionKey(state);
+            var pk = id.ToString().ToLower();
             await container.DeleteItemAsync<Driver>(id.ToString(), new PartitionKey(pk));
-        }
-
-        private string GetPartitionKey(string state)
-        {
-            return $"{nameof(Driver).ToLower()}_{state.ToLower()}";
         }
     }
 }

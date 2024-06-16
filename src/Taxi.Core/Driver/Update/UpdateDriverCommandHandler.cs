@@ -20,10 +20,9 @@ namespace Taxi.Core.Driver.Update
             {
                 FirstName = command.Request.FirstName,
                 LastName = command.Request.LastName,
-                State = command.Request.State,
             };
 
-            await _driverRepository.Update(command.Id, command.State, driver);
+            await _driverRepository.Update(command.Id, driver);
         }
     }
 }

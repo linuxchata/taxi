@@ -16,7 +16,7 @@ namespace Taxi.Core.Driver.Delete
 
         public async Task Handle(DeleteDriverCommand command, CancellationToken cancellationToken)
         {
-            await _driverRepository.Delete(command.Id, command.State);
+            await _driverRepository.Delete(command.Id);
         }
     }
 }

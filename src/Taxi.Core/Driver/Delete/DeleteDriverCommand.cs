@@ -5,14 +5,11 @@ namespace Taxi.Core.Driver.Delete
 {
     public sealed class DeleteDriverCommand : IRequest
     {
-        internal Guid Id { get; private set; }
+        internal string Id { get; private set; }
 
-        internal string State { get; private set; }
-
-        public DeleteDriverCommand(Guid id, string state)
+        public DeleteDriverCommand(string id)
         {
             Id = id;
-            State = state;
         }
     }
 }

@@ -10,8 +10,8 @@ namespace Taxi.Core.Infrastructure
 
         Task<string> Create(Domain.Driver driver);
 
-        Task Update(Guid id, string state, Domain.Driver driver);
+        Task Update(string id, Domain.Driver driver);
 
-        Task Delete(Guid id, string state);
+        Task Delete(string id);
     }
 }
