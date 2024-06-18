@@ -12,6 +12,10 @@ namespace Taxi.WebApi.Controllers;
 [Route("[controller]")]
 public class DriverController(IMediator _mediator) : ControllerBase
 {
+    /// <summary>
+    /// Gets all drivers
+    /// </summary>
+    /// <returns>Returns all drivers</returns>
     [HttpGet(Name = "Get")]
     public async Task<ActionResult<List<string>>> Get()
     {
@@ -19,6 +23,10 @@ public class DriverController(IMediator _mediator) : ControllerBase
         return Ok(response.Items);
     }
 
+    /// <summary>
+    /// Creates the driver
+    /// </summary>
+    /// <param name="request">Request to create a driver</param>
     [HttpPost]
     public async Task<ActionResult<List<string>>> Create([FromBody][NotNull] CreateDriverRequest request)
     {
@@ -26,6 +34,11 @@ public class DriverController(IMediator _mediator) : ControllerBase
         return Ok(response);
     }
 
+    /// <summary>
+    /// Updates the driver
+    /// </summary>
+    /// <param name="id">The identifier of the driver</param>
+    /// <param name="request">Request to update the driver</param>
     [HttpPut("{id}")]
     public async Task<ActionResult<List<string>>> Update(
         [FromRoute] string id,
@@ -35,6 +48,10 @@ public class DriverController(IMediator _mediator) : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes the driver
+    /// </summary>
+    /// <param name="id">The identifier of the driver</param>
     [HttpDelete("{id}")]
     public async Task<ActionResult<List<string>>> Delete([FromRoute] string id)
     {

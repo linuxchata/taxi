@@ -61,6 +61,9 @@ namespace Taxi.Repository
 
             driver.Id = id.ToString().ToLower();
             driver.Pk = id.ToString().ToLower();
+            driver.Version = Version;
+            driver.Type = Type;
+
             await container.ReplaceItemAsync<Driver>(driver, id.ToString());
         }
 
@@ -70,6 +73,7 @@ namespace Taxi.Repository
             var container = client.GetContainer(DatabaseId, Container);
 
             var pk = id.ToString().ToLower();
+
             await container.DeleteItemAsync<Driver>(id.ToString(), new PartitionKey(pk));
         }
     }
