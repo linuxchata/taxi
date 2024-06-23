@@ -1,4 +1,4 @@
-﻿namespace Taxi.Core.Driver.GetAll
+﻿namespace Taxi.Core.Driver.Get
 {
     public sealed class GetDriverResponse
     {

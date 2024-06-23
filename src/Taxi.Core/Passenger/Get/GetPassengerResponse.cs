@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Taxi.Core.Passenger.GetAll
+﻿namespace Taxi.Core.Passenger.Get
 {
     public sealed class GetPassengerResponse
     {

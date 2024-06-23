@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Taxi.Core.Passenger.Create;
 using Taxi.Core.Passenger.Delete;
+using Taxi.Core.Passenger.Get;
 using Taxi.Core.Passenger.GetAll;
 using Taxi.Core.Passenger.Update;
 
@@ -17,13 +18,27 @@ public class PassengerController(IMediator _mediator) : ControllerBase
     /// Gets all passengers
     /// </summary>
     /// <returns>Returns all passengers</returns>
-    [HttpGet(Name = "GetPassengers")]
+    [HttpGet]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType<GetPassengersResponse>(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetPassengersResponse>> GetAll()
     {
         var response = await _mediator.Send(new GetPassengersQuery());
         return Ok(response.Items);
+    }
+
+    /// <summary>
+    /// Gets a passenger
+    /// </summary>
+    /// <param name="id">The identifier of the passenger</param>
+    /// <returns>Returns a passenger</returns>
+    [HttpGet("{id}")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType<GetPassengerResponse>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<GetPassengerResponse>> Get([FromRoute] string id)
+    {
+        var response = await _mediator.Send(new GetPassengerQuery(id));
+        return Ok(response);
     }
 
     /// <summary>

@@ -19,7 +19,7 @@ namespace Taxi.Core.Passenger.GetAll
         {
             var passengers = await _passengerRepository.GetAll();
 
-            var mapped = passengers.Select(d => new GetPassengerResponse
+            var mapped = passengers.Select(d => new PassengerItem
             {
                 Id = d.Id,
                 FirstName = d.FirstName,

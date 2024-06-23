@@ -27,6 +27,24 @@
 					"response": []
 				},
 				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/Driver/6523780e-d6dc-424b-8e71-004afc8c7468",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"Driver",
+								"6523780e-d6dc-424b-8e71-004afc8c7468"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Add",
 					"request": {
 						"method": "POST",
@@ -69,7 +87,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"firstName\": \"John\",\r\n  \"lastName\": \"Oliver\",\r\n  \"state\": \"NY\"\r\n}",
+							"raw": "{\r\n  \"firstName\": \"John\",\r\n  \"lastName\": \"Oliver\",\r\n  \"state\": \"WY\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -102,6 +120,127 @@
 							"path": [
 								"Driver",
 								"82747f98-086a-4c97-8dea-e245641df9dc"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Passengers",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/Passenger",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"Passenger"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/Passenger/0e8ee2ba-f626-44d7-8681-63fd14a7f4e2",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"Passenger",
+								"0e8ee2ba-f626-44d7-8681-63fd14a7f4e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"Sam\",\r\n  \"lastName\": \"Williams\",\r\n  \"state\": \"CA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/Passenger",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"Passenger"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"Sam\",\r\n  \"lastName\": \"Williams\",\r\n  \"state\": \"MO\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/Passenger/0e8ee2ba-f626-44d7-8681-63fd14a7f4e2",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"Passenger",
+								"0e8ee2ba-f626-44d7-8681-63fd14a7f4e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/Passenger/0e8ee2ba-f626-44d7-8681-63fd14a7f4e2",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"Passenger",
+								"0e8ee2ba-f626-44d7-8681-63fd14a7f4e2"
 							]
 						}
 					},

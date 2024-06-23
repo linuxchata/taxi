@@ -7,6 +7,8 @@ namespace Taxi.Core.Infrastructure
     {
         Task<IEnumerable<Domain.Passenger>> GetAll();
 
+        Task<Domain.Passenger> GetById(string id);
+
         Task<string> Create(Domain.Passenger driver);
 
         Task Update(string id, Domain.Passenger driver);

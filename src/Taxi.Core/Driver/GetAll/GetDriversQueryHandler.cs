@@ -19,7 +19,7 @@ namespace Taxi.Core.Driver.GetAll
         {
             var drivers = await _driverRepository.GetAll();
 
-            var mapped = drivers.Select(d => new GetDriverResponse
+            var mapped = drivers.Select(d => new DriverItem
             {
                 Id = d.Id,
                 FirstName = d.FirstName,

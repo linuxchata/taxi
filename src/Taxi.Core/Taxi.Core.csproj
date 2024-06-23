@@ -11,11 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Passenger\Get\" />
-    <Folder Include="Driver\Get\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Taxi.Domain\Taxi.Domain.csproj" />
   </ItemGroup>
 

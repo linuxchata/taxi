@@ -39,6 +39,16 @@ namespace Taxi.Repository
             return documents.Resource;
         }
 
+        public async Task<Driver> GetById(string id)
+        {
+            using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+            var container = client.GetContainer(DatabaseId, Container);
+
+            var driver = await container.ReadItemAsync<Driver>(id, new PartitionKey(id));
+
+            return driver.Resource;
+        }
+
         public async Task<string> Create(Driver driver)
         {
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);

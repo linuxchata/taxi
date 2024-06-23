@@ -4,6 +4,6 @@ namespace Taxi.Core.Passenger.GetAll
 {
     public sealed class GetPassengersResponse
     {
-        public IEnumerable<GetPassengerResponse> Items { get; set; } = null!;
+        public IEnumerable<PassengerItem> Items { get; set; } = null!;
     }
 }

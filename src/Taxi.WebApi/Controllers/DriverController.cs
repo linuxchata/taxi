@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Taxi.Core.Driver.Create;
 using Taxi.Core.Driver.Delete;
+using Taxi.Core.Driver.Get;
 using Taxi.Core.Driver.GetAll;
 using Taxi.Core.Driver.Update;
 
@@ -17,13 +18,27 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// Gets all drivers
     /// </summary>
     /// <returns>Returns all drivers</returns>
-    [HttpGet(Name = "GetDrivers")]
+    [HttpGet]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType<GetDriversResponse>(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetDriversResponse>> GetAll()
     {
         var response = await _mediator.Send(new GetDriversQuery());
         return Ok(response.Items);
+    }
+
+    /// <summary>
+    /// Gets a driver
+    /// </summary>
+    /// <param name="id">The identifier of the driver</param>
+    /// <returns>Returns a driver</returns>
+    [HttpGet("{id}")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType<Core.Driver.Get.GetDriverResponse>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<Core.Driver.Get.GetDriverResponse>> Get([FromRoute] string id)
+    {
+        var response = await _mediator.Send(new GetDriverQuery(id));
+        return Ok(response);
     }
 
     /// <summary>
