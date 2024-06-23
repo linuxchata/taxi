@@ -1,16 +1,15 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
 
-namespace Taxi.Core.Driver.Update
+namespace Taxi.Core.Passenger.GetAll
 {
-    public sealed class UpdateDriverRequest
+    public sealed class GetPassengerResponse
     {
-        [NotNull]
+        public string Id { get; set; } = null!;
+
         public string FirstName { get; set; } = null!;
 
-        [NotNull]
         public string LastName { get; set; } = null!;
 
-        [NotNull]
         public string State { get; set; } = null!;
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Taxi.Core.Driver.Update
+namespace Taxi.Core.Passenger.Update
 {
-    public sealed class UpdateDriverRequest
+    public sealed class UpdatePassengerRequest
     {
         [NotNull]
         public string FirstName { get; set; } = null!;

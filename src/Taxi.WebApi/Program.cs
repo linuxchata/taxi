@@ -1,3 +1,4 @@
+using System.Reflection;
 using Taxi.Core;
 using Taxi.Core.Infrastructure;
 
@@ -7,7 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<DependencyInjection>());
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
+    $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+});
 
 Taxi.Repository.DependencyInjection.Register(builder.Services);
 

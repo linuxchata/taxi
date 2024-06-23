@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Taxi.Core.Driver.GetAll;
 using Taxi.Core.Infrastructure;
 
-namespace Taxi.Core.Driver.GetDrivers
+namespace Taxi.Core.Driver.GetAll
 {
     public sealed class GetDriversQueryHandler : IRequestHandler<GetDriversQuery, GetDriversResponse>
     {

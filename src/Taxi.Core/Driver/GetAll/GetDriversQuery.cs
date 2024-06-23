@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using MediatR;
-using Taxi.Core.Driver.GetAll;
+﻿using MediatR;
 
-namespace Taxi.Core.Driver.GetDrivers
+namespace Taxi.Core.Driver.GetAll
 {
     public sealed class GetDriversQuery : IRequest<GetDriversResponse>
     {

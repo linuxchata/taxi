@@ -8,6 +8,7 @@ namespace Taxi.Repository
         public static void Register(IServiceCollection serviceCollection)
         {
             serviceCollection.AddTransient<IDriverRepository, DriverRepository>();
+            serviceCollection.AddTransient<IPassengerRepository, PassengerRepository>();
         }
     }
 }

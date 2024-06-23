@@ -1,9 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Mime;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Taxi.Core.Driver.Create;
 using Taxi.Core.Driver.Delete;
-using Taxi.Core.Driver.GetDrivers;
+using Taxi.Core.Driver.GetAll;
 using Taxi.Core.Driver.Update;
 
 namespace Taxi.WebApi.Controllers;
@@ -16,22 +17,27 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// Gets all drivers
     /// </summary>
     /// <returns>Returns all drivers</returns>
-    [HttpGet(Name = "Get")]
-    public async Task<ActionResult<List<string>>> Get()
+    [HttpGet(Name = "GetDrivers")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType<GetDriversResponse>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<GetDriversResponse>> GetAll()
     {
         var response = await _mediator.Send(new GetDriversQuery());
         return Ok(response.Items);
     }
 
     /// <summary>
-    /// Creates the driver
+    /// Creates a driver
     /// </summary>
     /// <param name="request">Request to create a driver</param>
     [HttpPost]
-    public async Task<ActionResult<List<string>>> Create([FromBody][NotNull] CreateDriverRequest request)
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<ActionResult<string>> Create([FromBody][NotNull] CreateDriverRequest request)
     {
         var response = await _mediator.Send(new CreateDriverCommand(request));
-        return Ok(response);
+        return CreatedAtAction(nameof(Create), new { id = response });
     }
 
     /// <summary>
@@ -40,7 +46,9 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// <param name="id">The identifier of the driver</param>
     /// <param name="request">Request to update the driver</param>
     [HttpPut("{id}")]
-    public async Task<ActionResult<List<string>>> Update(
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult> Update(
         [FromRoute] string id,
         [FromBody][NotNull] UpdateDriverRequest request)
     {
@@ -53,7 +61,8 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// </summary>
     /// <param name="id">The identifier of the driver</param>
     [HttpDelete("{id}")]
-    public async Task<ActionResult<List<string>>> Delete([FromRoute] string id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult> Delete([FromRoute] string id)
     {
         await _mediator.Send(new DeleteDriverCommand(id));
         return NoContent();
