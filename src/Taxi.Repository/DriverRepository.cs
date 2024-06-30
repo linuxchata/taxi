@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Scripts;
 using Microsoft.Extensions.Configuration;
 using Taxi.Core.Infrastructure;
 using Taxi.Domain;
+using Taxi.Repository.Triggers.Driver;
 
 namespace Taxi.Repository
 {
@@ -54,12 +56,22 @@ namespace Taxi.Repository
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
+            await CreateTrigger(container);
+
             driver.Id = Guid.NewGuid().ToString().ToLower();
             driver.Pk = driver.Id;
             driver.Version = Version;
             driver.Type = Type;
 
-            var response = await container.CreateItemAsync<Driver>(driver);
+            var response = await container.CreateItemAsync<Driver>(
+                driver,
+                requestOptions: new ItemRequestOptions
+                {
+                    PreTriggers = new List<string>
+                    {
+                        nameof(DriverPreTriggers.ValidateDriverPreTrigger)
+                    }
+                });
 
             return response.Resource.Id.ToString();
         }
@@ -69,12 +81,23 @@ namespace Taxi.Repository
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
+            await CreateTrigger(container);
+
             driver.Id = id.ToString().ToLower();
             driver.Pk = id.ToString().ToLower();
             driver.Version = Version;
             driver.Type = Type;
 
-            await container.ReplaceItemAsync<Driver>(driver, id.ToString());
+            await container.ReplaceItemAsync<Driver>(
+                driver,
+                id.ToString(),
+                requestOptions: new ItemRequestOptions
+                {
+                    PreTriggers = new List<string>
+                    {
+                        nameof(DriverPreTriggers.ValidateDriverPreTrigger)
+                    }
+                });
         }
 
         public async Task Delete(string id)
@@ -85,6 +108,28 @@ namespace Taxi.Repository
             var pk = id.ToString().ToLower();
 
             await container.DeleteItemAsync<Driver>(id.ToString(), new PartitionKey(pk));
+        }
+
+        private async Task CreateTrigger(Container container)
+        {
+            var triggerProperties = new TriggerProperties
+            {
+                Id = nameof(DriverPreTriggers.ValidateDriverPreTrigger),
+                Body = DriverPreTriggers.ValidateDriverPreTrigger,
+                TriggerOperation = TriggerOperation.All, // For Create & Update operation, All must be used
+                TriggerType = TriggerType.Pre,
+            };
+
+            try
+            {
+                await container.Scripts.ReadTriggerAsync(nameof(DriverPreTriggers.ValidateDriverPreTrigger));
+                await container.Scripts.ReplaceTriggerAsync(triggerProperties);
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                await container.Scripts.CreateTriggerAsync(triggerProperties);
+                return;
+            }
         }
     }
 }
