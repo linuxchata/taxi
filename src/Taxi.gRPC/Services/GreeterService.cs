@@ -1,6 +1,6 @@
 using Grpc.Core;
 
-namespace Taxi.WebApi.Services
+namespace Taxi.gRPC.Services
 {
     public class GreeterService : Greeter.GreeterBase
     {
