@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option csharp_namespace = "Taxi.gRPC";
+
+package passenger;
+
+// The passenger service definition.
+service Passenger {
+  // Gets a passenger
+  rpc GetPassenger (GetPassengerRequest) returns (GetPassengerReply);
+}
+
+// The request message containing a passenger's id.
+message GetPassengerRequest {
+  string id = 1;
+}
+
+// The response message containing the passenger.
+message GetPassengerReply {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string state = 4;
+}

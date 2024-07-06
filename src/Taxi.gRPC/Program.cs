@@ -13,6 +13,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<DriverService>();
+app.MapGrpcService<PassengerService>();
 app.MapGet("/", () => "gRPC endpoints are up and running");
 
 app.Run();
