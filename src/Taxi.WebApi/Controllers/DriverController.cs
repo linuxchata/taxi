@@ -34,8 +34,8 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// <returns>Returns a driver</returns>
     [HttpGet("{id}")]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType<Core.Driver.Get.GetDriverResponse>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<Core.Driver.Get.GetDriverResponse>> Get([FromRoute] string id)
+    [ProducesResponseType<GetDriverResponse>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<GetDriverResponse>> Get([FromRoute] string id)
     {
         var response = await _mediator.Send(new GetDriverQuery(id));
         return Ok(response);

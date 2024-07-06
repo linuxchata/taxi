@@ -1,6 +1,5 @@
 using System.Reflection;
 using Taxi.Core;
-using Taxi.Core.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
