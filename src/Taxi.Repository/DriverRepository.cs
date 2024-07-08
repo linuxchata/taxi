@@ -18,8 +18,6 @@ namespace Taxi.Repository
 
         private const string Type = "Driver";
 
-        private const int Version = 1;
-
         private readonly IConfiguration _configuration;
 
         public DriverRepository(IConfiguration configuration)
@@ -60,8 +58,6 @@ namespace Taxi.Repository
 
             driver.Id = Guid.NewGuid().ToString().ToLower();
             driver.Pk = driver.Id;
-            driver.Version = Version;
-            driver.Type = Type;
 
             var response = await container.CreateItemAsync<Driver>(
                 driver,
@@ -85,8 +81,6 @@ namespace Taxi.Repository
 
             driver.Id = id.ToString().ToLower();
             driver.Pk = id.ToString().ToLower();
-            driver.Version = Version;
-            driver.Type = Type;
 
             await container.ReplaceItemAsync<Driver>(
                 driver,

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Taxi.Domain.Vehicle">
+    <Position X="3" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>IAAGAAAAAAAAAAAAAAAAAAAAAAAAAEAAIQgAgAACAAA=</HashCode>
+      <FileName>Vehicle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Taxi.Domain.VehicleDriver">
+    <Position X="3" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAEAAAAAAAAAAAAAAAAAAAAAAAAEAAAAABAAAAAg=</HashCode>
+      <FileName>VehicleDriver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Taxi.Domain.Driver">
+    <Position X="0.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>IAACAEAAACAAgAAAAAAAQAAAAAIAAAEAIQAABAAAAAg=</HashCode>
+      <FileName>Driver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Taxi.Domain.DriverVehicle">
+    <Position X="0.5" Y="4" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAgAgAACAAA=</HashCode>
+      <FileName>DriverVehicle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Taxi.Domain.Passenger">
+    <Position X="5.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>IAACAEAAACAAAAAAAAAAQAAAAAIAAAEAIQAABAAAAAg=</HashCode>
+      <FileName>Passenger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Taxi.Domain.Trip">
+    <Position X="8" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>QAALAAAAAAAAEBAAAACAAAAACAEAgABIIAAAAAAAAAA=</HashCode>
+      <FileName>Trip.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

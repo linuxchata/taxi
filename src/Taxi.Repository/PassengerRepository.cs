@@ -18,8 +18,6 @@ namespace Taxi.Repository
 
         private const string Type = "Passenger";
 
-        private const int Version = 1;
-
         private readonly IConfiguration _configuration;
 
         public PassengerRepository(IConfiguration configuration)
@@ -60,8 +58,6 @@ namespace Taxi.Repository
 
             passenger.Id = Guid.NewGuid().ToString().ToLower();
             passenger.Pk = passenger.Id;
-            passenger.Version = Version;
-            passenger.Type = Type;
 
             var response = await container.CreateItemAsync<Passenger>(
                 passenger,
@@ -85,8 +81,6 @@ namespace Taxi.Repository
 
             passenger.Id = id.ToString().ToLower();
             passenger.Pk = id.ToString().ToLower();
-            passenger.Version = Version;
-            passenger.Type = Type;
 
             await container.ReplaceItemAsync<Passenger>(
                 passenger,
