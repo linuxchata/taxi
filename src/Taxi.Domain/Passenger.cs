@@ -31,6 +31,9 @@ namespace Taxi.Domain
         [JsonProperty(PropertyName = "rating")]
         public decimal Rating { get; set; }
 
+        [JsonProperty(PropertyName = "isActive")]
+        public bool IsActive { get; set; }
+
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; } = nameof(Passenger);
 

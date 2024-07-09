@@ -35,6 +35,12 @@ namespace Taxi.Domain
         [JsonProperty(PropertyName = "vehicles")]
         public IEnumerable<DriverVehicle>? Vehicles { get; set; }
 
+        [JsonProperty(PropertyName = "isActive")]
+        public bool IsActive { get; set; }
+
+        [JsonProperty(PropertyName = "isApproved")]
+        public bool IsApproved { get; set; }
+
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; } = nameof(Driver);
 
