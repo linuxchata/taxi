@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
+using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Taxi.Core.Passenger.Create;
@@ -11,7 +12,8 @@ using Taxi.Core.Passenger.Update;
 namespace Taxi.WebApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[ApiVersion(1.0)]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class PassengerController(IMediator _mediator) : ControllerBase
 {
     /// <summary>

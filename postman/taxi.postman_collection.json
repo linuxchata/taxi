@@ -15,11 +15,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/Driver",
+							"raw": "{{hostname}}/api/v1.0/Driver",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
+								"api",
+								"v1.0",
 								"Driver"
 							]
 						}
@@ -32,11 +34,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/Driver/6523780e-d6dc-424b-8e71-004afc8c7468",
+							"raw": "{{hostname}}/api/v1.0/Driver/6523780e-d6dc-424b-8e71-004afc8c7468",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
+								"api",
+								"v1.0",
 								"Driver",
 								"6523780e-d6dc-424b-8e71-004afc8c7468"
 							]
@@ -64,11 +68,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/Driver",
+							"raw": "{{hostname}}/api/v1.0/Driver",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
+								"api",
+								"v1.0",
 								"Driver"
 							]
 						}
@@ -95,11 +101,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/Driver/6523780e-d6dc-424b-8e71-004afc8c7468",
+							"raw": "{{hostname}}/api/v1.0/Driver/6523780e-d6dc-424b-8e71-004afc8c7468",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
+								"api",
+								"v1.0",
 								"Driver",
 								"6523780e-d6dc-424b-8e71-004afc8c7468"
 							]
@@ -113,11 +121,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/Driver/82747f98-086a-4c97-8dea-e245641df9dc",
+							"raw": "{{hostname}}/api/v1.0/Driver/82747f98-086a-4c97-8dea-e245641df9dc",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
+								"api",
+								"v1.0",
 								"Driver",
 								"82747f98-086a-4c97-8dea-e245641df9dc"
 							]
@@ -136,11 +146,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/Passenger",
+							"raw": "{{hostname}}/api/v1.0/Passenger",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
+								"api",
+								"v1.0",
 								"Passenger"
 							]
 						}
@@ -153,11 +165,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/Passenger/0e8ee2ba-f626-44d7-8681-63fd14a7f4e2",
+							"raw": "{{hostname}}/api/v1.0/Passenger/0e8ee2ba-f626-44d7-8681-63fd14a7f4e2",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
+								"api",
+								"v1.0",
 								"Passenger",
 								"0e8ee2ba-f626-44d7-8681-63fd14a7f4e2"
 							]
@@ -185,11 +199,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/Passenger",
+							"raw": "{{hostname}}/api/v1.0/Passenger",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
+								"api",
+								"v1.0",
 								"Passenger"
 							]
 						}
@@ -216,11 +232,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/Passenger/0e8ee2ba-f626-44d7-8681-63fd14a7f4e2",
+							"raw": "{{hostname}}/api/v1.0/Passenger/0e8ee2ba-f626-44d7-8681-63fd14a7f4e2",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
+								"api",
+								"v1.0",
 								"Passenger",
 								"0e8ee2ba-f626-44d7-8681-63fd14a7f4e2"
 							]
@@ -234,11 +252,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/Passenger/0e8ee2ba-f626-44d7-8681-63fd14a7f4e2",
+							"raw": "{{hostname}}/api/v1.0/Passenger/0e8ee2ba-f626-44d7-8681-63fd14a7f4e2",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
+								"api",
+								"v1.0",
 								"Passenger",
 								"0e8ee2ba-f626-44d7-8681-63fd14a7f4e2"
 							]
@@ -274,7 +294,7 @@
 	"variable": [
 		{
 			"key": "hostname",
-			"value": "https://localhost:7006",
+			"value": "https://localhost:6001",
 			"type": "string"
 		}
 	]
