@@ -20,7 +20,13 @@ namespace Taxi.Core.Driver.Update
             {
                 FirstName = command.Request.FirstName,
                 LastName = command.Request.LastName,
+                Email = command.Request.Email,
+                PhoneNumber = command.Request.PhoneNumber,
+                Country = command.Request.Country,
                 State = command.Request.State,
+                Rating = command.Request.Rating,
+                IsActive = command.Request.IsActive,
+                IsApproved = command.Request.IsApproved,
             };
 
             await _driverRepository.Update(command.Id, driver);

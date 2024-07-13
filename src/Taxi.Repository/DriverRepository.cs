@@ -80,7 +80,7 @@ namespace Taxi.Repository
             await CreateTrigger(container);
 
             driver.Id = id.ToString().ToLower();
-            driver.Pk = id.ToString().ToLower();
+            driver.Pk = driver.Id;
 
             await container.ReplaceItemAsync<Driver>(
                 driver,

@@ -24,7 +24,6 @@ namespace Taxi.Core.Driver.GetAll
                 Id = d.Id,
                 FirstName = d.FirstName,
                 LastName = d.LastName,
-                State = d.State,
             });
 
             return new GetDriversResponse { Items = mapped };

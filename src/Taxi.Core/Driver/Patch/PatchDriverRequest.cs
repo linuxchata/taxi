@@ -1,9 +1,7 @@
-﻿namespace Taxi.Core.Driver.Get
+﻿namespace Taxi.Core.Driver.Patch
 {
-    public sealed class GetDriverResponse
+    public class PatchDriverRequest
     {
-        public string Id { get; set; } = null!;
-
         public string FirstName { get; set; } = null!;
 
         public string LastName { get; set; } = null!;
@@ -15,8 +13,6 @@
         public string Country { get; set; } = null!;
 
         public string State { get; set; } = null!;
-
-        public decimal Rating { get; set; }
 
         public bool IsActive { get; set; }
 

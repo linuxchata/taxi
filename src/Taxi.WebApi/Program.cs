@@ -15,7 +15,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 });
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddProblemDetails();
 builder.Services.AddApiVersioning(option =>
 {

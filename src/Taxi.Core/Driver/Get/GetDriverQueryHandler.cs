@@ -23,7 +23,13 @@ namespace Taxi.Core.Driver.Get
                 Id = driver.Id,
                 FirstName = driver.FirstName,
                 LastName = driver.LastName,
+                Email = driver.Email,
+                PhoneNumber = driver.PhoneNumber,
+                Country = driver.Country,
                 State = driver.State,
+                Rating = driver.Rating,
+                IsActive = driver.IsActive,
+                IsApproved = driver.IsApproved,
             };
 
             return mapped;
