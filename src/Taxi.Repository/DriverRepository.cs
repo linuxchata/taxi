@@ -46,9 +46,9 @@ namespace Taxi.Repository
 
             try
             {
-                var driverResponse = await container.ReadItemAsync<Driver>(id, new PartitionKey(id));
+                var response = await container.ReadItemAsync<Driver>(id, new PartitionKey(id));
 
-                return driverResponse.Resource;
+                return response.Resource;
             }
             catch (CosmosException ex) when (IsNotFound(ex))
             {
@@ -94,7 +94,7 @@ namespace Taxi.Repository
 
             try
             {
-                var driverResponse = await container.ReplaceItemAsync<Driver>(
+                var response = await container.ReplaceItemAsync<Driver>(
                     driver,
                     id.ToString(),
                     requestOptions: new ItemRequestOptions
@@ -105,7 +105,7 @@ namespace Taxi.Repository
                         }
                     });
 
-                return driverResponse.Resource;
+                return response.Resource;
             }
             catch (CosmosException ex) when (IsNotFound(ex))
             {

@@ -11,8 +11,8 @@ namespace Taxi.Core.Infrastructure
 
         Task<string> Create(Domain.Passenger driver);
 
-        Task Update(string id, Domain.Passenger driver);
+        Task<Domain.Passenger> Update(string id, Domain.Passenger driver);
 
-        Task Delete(string id);
+        Task<bool> Delete(string id);
     }
 }

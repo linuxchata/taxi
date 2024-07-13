@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using Taxi.Core.Base;
 
 namespace Taxi.Core.Passenger.Update
 {
-    public sealed class UpdatePassengerCommand : IRequest
+    public sealed class UpdatePassengerCommand : IRequest<BaseResponse>
     {
         internal string Id { get; private set; }
 

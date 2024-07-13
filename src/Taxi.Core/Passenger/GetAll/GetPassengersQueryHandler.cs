@@ -24,7 +24,6 @@ namespace Taxi.Core.Passenger.GetAll
                 Id = d.Id,
                 FirstName = d.FirstName,
                 LastName = d.LastName,
-                State = d.State,
             });
 
             return new GetPassengersResponse { Items = mapped };

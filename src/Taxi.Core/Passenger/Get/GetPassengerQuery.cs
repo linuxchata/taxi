@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using Taxi.Core.Base;
 
 namespace Taxi.Core.Passenger.Get
 {
-    public sealed class GetPassengerQuery : IRequest<GetPassengerResponse>
+    public sealed class GetPassengerQuery : IRequest<BaseResponse>
     {
         internal string Id { get; private set; }
 

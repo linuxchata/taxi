@@ -1,8 +1,10 @@
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Taxi.Core.Base;
 using Taxi.Core.Passenger.Create;
 using Taxi.Core.Passenger.Delete;
 using Taxi.Core.Passenger.Get;
@@ -34,13 +36,20 @@ public class PassengerController(IMediator _mediator) : ControllerBase
     /// </summary>
     /// <param name="id">The identifier of the passenger</param>
     /// <returns>Returns a passenger</returns>
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name = "GetPassenger")]
     [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType<GetPassengerResponse>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<GetPassengerResponse>> Get([FromRoute] string id)
+    public async Task<ActionResult<GetPassengerResponse>> Get2([FromRoute] string id)
     {
         var response = await _mediator.Send(new GetPassengerQuery(id));
-        return Ok(response);
+
+        return response switch
+        {
+            NotFoundResponse => NotFound(),
+            GetPassengerResponse => Ok(response),
+            _ => StatusCode(StatusCodes.Status501NotImplemented),
+        };
     }
 
     /// <summary>
@@ -51,10 +60,12 @@ public class PassengerController(IMediator _mediator) : ControllerBase
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<ActionResult<string>> Create([FromBody][NotNull] CreatePassengerRequest request)
+    public async Task<ActionResult<string>> Create([FromBody][Required] CreatePassengerRequest request)
     {
         var response = await _mediator.Send(new CreatePassengerCommand(request));
-        return CreatedAtAction(nameof(Create), new { id = response });
+
+        var responseValue = new { id = response };
+        return CreatedAtRoute("GetPassenger", responseValue, responseValue);
     }
 
     /// <summary>
@@ -69,8 +80,14 @@ public class PassengerController(IMediator _mediator) : ControllerBase
         [FromRoute] string id,
         [FromBody][NotNull] UpdatePassengerRequest request)
     {
-        await _mediator.Send(new UpdatePassengerCommand(id, request));
-        return NoContent();
+        var response = await _mediator.Send(new UpdatePassengerCommand(id, request));
+
+        return response switch
+        {
+            NotFoundResponse => NotFound(),
+            UpdatePassengerResponse => NoContent(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented),
+        };
     }
 
     /// <summary>
@@ -78,10 +95,17 @@ public class PassengerController(IMediator _mediator) : ControllerBase
     /// </summary>
     /// <param name="id">The identifier of the passenger</param>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Delete([FromRoute] string id)
     {
-        await _mediator.Send(new DeletePassengerCommand(id));
-        return NoContent();
+        var response = await _mediator.Send(new DeletePassengerCommand(id));
+
+        return response switch
+        {
+            NotFoundResponse => NotFound(),
+            DeletePassengerResponse => NoContent(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented),
+        };
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Taxi.Core.Base;
 using Taxi.Core.Infrastructure;
 
 namespace Taxi.Core.Passenger.Get
 {
-    public sealed class GetPassengerQueryHandler : IRequestHandler<GetPassengerQuery, GetPassengerResponse>
+    public sealed class GetPassengerQueryHandler : IRequestHandler<GetPassengerQuery, BaseResponse>
     {
         private readonly IPassengerRepository _passengerRepository;
 
@@ -14,16 +15,26 @@ namespace Taxi.Core.Passenger.Get
             _passengerRepository = passengerRepository;
         }
 
-        public async Task<GetPassengerResponse> Handle(GetPassengerQuery query, CancellationToken cancellationToken)
+        public async Task<BaseResponse> Handle(GetPassengerQuery query, CancellationToken cancellationToken)
         {
-            var driver = await _passengerRepository.GetById(query.Id);
+            var passenger = await _passengerRepository.GetById(query.Id);
+
+            if (passenger is null)
+            {
+                return new NotFoundResponse();
+            }
 
             var mapped = new GetPassengerResponse
             {
-                Id = driver.Id,
-                FirstName = driver.FirstName,
-                LastName = driver.LastName,
-                State = driver.State,
+                Id = passenger.Id,
+                FirstName = passenger.FirstName,
+                LastName = passenger.LastName,
+                Email = passenger.Email,
+                PhoneNumber = passenger.PhoneNumber,
+                Country = passenger.Country,
+                State = passenger.State,
+                Rating = passenger.Rating,
+                IsActive = passenger.IsActive,
             };
 
             return mapped;

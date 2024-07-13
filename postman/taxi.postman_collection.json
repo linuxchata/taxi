@@ -199,7 +199,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/api/v1.0/Passenger/0e8ee2ba-f626-44d7-8681-63fd14a7f4e2",
+							"raw": "{{hostname}}/api/v1.0/Passenger/ab5bbc2a-b163-400f-8bde-955252eceed1",
 							"host": [
 								"{{hostname}}"
 							],
@@ -207,7 +207,7 @@
 								"api",
 								"v1.0",
 								"Passenger",
-								"0e8ee2ba-f626-44d7-8681-63fd14a7f4e2"
+								"ab5bbc2a-b163-400f-8bde-955252eceed1"
 							]
 						}
 					},
@@ -225,7 +225,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"firstName\": \"Sam\",\r\n  \"lastName\": \"Williams\",\r\n  \"state\": \"CA\"\r\n}",
+							"raw": "{\r\n  \"firstName\": \"Sam\",\r\n  \"lastName\": \"Williams\",\r\n  \"email\": \"sam.williams@example.com\",\r\n  \"phoneNumber\": 798566327,\r\n  \"country\": \"US\",\r\n  \"state\": \"NY\",\r\n  \"rating\": 5.0,\r\n  \"isActive\": false\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -258,7 +258,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"firstName\": \"Sam\",\r\n  \"lastName\": \"Williams\",\r\n  \"state\": \"MO\"\r\n}",
+							"raw": "{\r\n    \"id\": \"ab5bbc2a-b163-400f-8bde-955252eceed1\",\r\n    \"firstName\": \"Sam\",\r\n    \"lastName\": \"Williams\",\r\n    \"email\": \"sam.williams@example.com\",\r\n    \"phoneNumber\": \"798566327\",\r\n    \"country\": \"US\",\r\n    \"state\": \"NY\",\r\n    \"rating\": 5.0,\r\n    \"isActive\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -266,7 +266,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/api/v1.0/Passenger/0e8ee2ba-f626-44d7-8681-63fd14a7f4e2",
+							"raw": "{{hostname}}/api/v1.0/Passenger/ab5bbc2a-b163-400f-8bde-955252eceed1",
 							"host": [
 								"{{hostname}}"
 							],
@@ -274,7 +274,7 @@
 								"api",
 								"v1.0",
 								"Passenger",
-								"0e8ee2ba-f626-44d7-8681-63fd14a7f4e2"
+								"ab5bbc2a-b163-400f-8bde-955252eceed1"
 							]
 						}
 					},

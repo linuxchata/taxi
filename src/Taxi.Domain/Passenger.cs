@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace Taxi.Domain
 {
@@ -33,6 +34,12 @@ namespace Taxi.Domain
 
         [JsonProperty(PropertyName = "isActive")]
         public bool IsActive { get; set; }
+
+        [JsonProperty(PropertyName = "createdDate")]
+        public DateTime CreatedDate { get; set; }
+
+        [JsonProperty(PropertyName = "updatedDate")]
+        public DateTime UpdatedDate { get; set; }
 
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; } = nameof(Passenger);

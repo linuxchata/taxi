@@ -37,9 +37,9 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// </summary>
     /// <param name="id">The identifier of the driver</param>
     /// <returns>Returns a driver</returns>
-    [HttpGet("{id}", Name = nameof(Get))]
+    [HttpGet("{id}", Name = "GetDriver")]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType<GetDriverResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType<GetDriverResponse>(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetDriverResponse>> Get([FromRoute] string id)
     {
@@ -66,7 +66,7 @@ public class DriverController(IMediator _mediator) : ControllerBase
         var response = await _mediator.Send(new CreateDriverCommand(request));
 
         var responseValue = new { id = response };
-        return CreatedAtAction(nameof(Get), responseValue, responseValue);
+        return CreatedAtRoute("GetDriver", responseValue, responseValue);
     }
 
     /// <summary>
