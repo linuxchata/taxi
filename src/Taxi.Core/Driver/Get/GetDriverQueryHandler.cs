@@ -1,11 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Taxi.Core.Base;
 using Taxi.Core.Infrastructure;
 
 namespace Taxi.Core.Driver.Get
 {
-    public sealed class GetDriverQueryHandler : IRequestHandler<GetDriverQuery, GetDriverBaseResponse>
+    public sealed class GetDriverQueryHandler : IRequestHandler<GetDriverQuery, BaseResponse>
     {
         private readonly IDriverRepository _driverRepository;
 
@@ -14,13 +15,13 @@ namespace Taxi.Core.Driver.Get
             _driverRepository = driverRepository;
         }
 
-        public async Task<GetDriverBaseResponse> Handle(GetDriverQuery query, CancellationToken cancellationToken)
+        public async Task<BaseResponse> Handle(GetDriverQuery query, CancellationToken cancellationToken)
         {
             var driver = await _driverRepository.GetById(query.Id);
 
             if (driver is null)
             {
-                return new GetDriverNotFoundResponse();
+                return new NotFoundResponse();
             }
 
             var mapped = new GetDriverResponse

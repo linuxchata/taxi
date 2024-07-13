@@ -4,6 +4,7 @@ using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Taxi.Core.Base;
 using Taxi.Core.Driver.Create;
 using Taxi.Core.Driver.Delete;
 using Taxi.Core.Driver.Get;
@@ -36,9 +37,9 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// </summary>
     /// <param name="id">The identifier of the driver</param>
     /// <returns>Returns a driver</returns>
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name = nameof(Get))]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType<GetDriverResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<GetDriverResponse>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<GetDriverResponse>(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetDriverResponse>> Get([FromRoute] string id)
     {
@@ -46,9 +47,9 @@ public class DriverController(IMediator _mediator) : ControllerBase
 
         return response switch
         {
-            GetDriverNotFoundResponse => NotFound(string.Empty),
+            NotFoundResponse => NotFound(),
             GetDriverResponse => Ok(response),
-            _ => StatusCode(501),
+            _ => StatusCode(StatusCodes.Status501NotImplemented),
         };
     }
 
@@ -63,7 +64,9 @@ public class DriverController(IMediator _mediator) : ControllerBase
     public async Task<ActionResult<string>> Create([FromBody][Required] CreateDriverRequest request)
     {
         var response = await _mediator.Send(new CreateDriverCommand(request));
-        return CreatedAtAction(nameof(Create), new { id = response });
+
+        var responseValue = new { id = response };
+        return CreatedAtAction(nameof(Get), responseValue, responseValue);
     }
 
     /// <summary>
@@ -73,13 +76,20 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// <param name="request">Request to update the driver</param>
     [HttpPut("{id}")]
     [Consumes(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Update(
         [FromRoute] string id,
         [FromBody][Required] UpdateDriverRequest request)
     {
-        await _mediator.Send(new UpdateDriverCommand(id, request));
-        return NoContent();
+        var response = await _mediator.Send(new UpdateDriverCommand(id, request));
+
+        return response switch
+        {
+            NotFoundResponse => NotFound(),
+            UpdateDriverResponse => NoContent(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented),
+        };
     }
 
     /// <summary>
@@ -89,13 +99,20 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// <param name="request">Request to patch the driver</param>
     [HttpPatch("{id}")]
     [Consumes(MediaTypeNames.Application.JsonPatch)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Patch(
         [FromRoute] string id,
         [FromBody] JsonPatchDocument<PatchDriverRequest> request)
     {
-        await _mediator.Send(new PatchDriverCommand(id, request));
-        return NoContent();
+        var response = await _mediator.Send(new PatchDriverCommand(id, request));
+
+        return response switch
+        {
+            NotFoundResponse => NotFound(),
+            PatchDriverResponse => NoContent(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented),
+        };
     }
 
     /// <summary>
@@ -103,10 +120,17 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// </summary>
     /// <param name="id">The identifier of the driver</param>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Delete([FromRoute] string id)
     {
-        await _mediator.Send(new DeleteDriverCommand(id));
-        return NoContent();
+        var response = await _mediator.Send(new DeleteDriverCommand(id));
+
+        return response switch
+        {
+            NotFoundResponse => NotFound(),
+            DeleteDriverResponse => NoContent(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented),
+        };
     }
 }

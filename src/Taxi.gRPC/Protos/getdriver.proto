@@ -20,5 +20,11 @@ message GetDriverReply {
   string id = 1;
   string first_name = 2;
   string last_name = 3;
-  string state = 4;
+  string email = 4;
+  string phone_number = 5;
+  string country = 6;
+  string state = 7;
+  double rating = 8;
+  bool is_active = 9;
+  bool is_approved = 10;
 }

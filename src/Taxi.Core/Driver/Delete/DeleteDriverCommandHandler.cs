@@ -1,11 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Taxi.Core.Base;
 using Taxi.Core.Infrastructure;
 
 namespace Taxi.Core.Driver.Delete
 {
-    public sealed class DeleteDriverCommandHandler : IRequestHandler<DeleteDriverCommand>
+    public sealed class DeleteDriverCommandHandler : IRequestHandler<DeleteDriverCommand, BaseResponse>
     {
         private readonly IDriverRepository _driverRepository;
 
@@ -14,9 +15,16 @@ namespace Taxi.Core.Driver.Delete
             _driverRepository = driverRepository;
         }
 
-        public async Task Handle(DeleteDriverCommand command, CancellationToken cancellationToken)
+        public async Task<BaseResponse> Handle(DeleteDriverCommand command, CancellationToken cancellationToken)
         {
-            await _driverRepository.Delete(command.Id);
+            var isDriverDeleted = await _driverRepository.Delete(command.Id);
+
+            if (!isDriverDeleted)
+            {
+                return new NotFoundResponse();
+            }
+
+            return new DeleteDriverResponse();
         }
     }
 }

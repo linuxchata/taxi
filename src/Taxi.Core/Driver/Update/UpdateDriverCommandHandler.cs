@@ -1,11 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Taxi.Core.Base;
 using Taxi.Core.Infrastructure;
 
 namespace Taxi.Core.Driver.Update
 {
-    public sealed class UpdateDriverCommandHandler : IRequestHandler<UpdateDriverCommand>
+    public sealed class UpdateDriverCommandHandler : IRequestHandler<UpdateDriverCommand, BaseResponse>
     {
         private readonly IDriverRepository _driverRepository;
 
@@ -14,7 +15,7 @@ namespace Taxi.Core.Driver.Update
             _driverRepository = driverRepository;
         }
 
-        public async Task Handle(UpdateDriverCommand command, CancellationToken cancellationToken)
+        public async Task<BaseResponse> Handle(UpdateDriverCommand command, CancellationToken cancellationToken)
         {
             var driver = new Domain.Driver
             {
@@ -29,7 +30,14 @@ namespace Taxi.Core.Driver.Update
                 IsApproved = command.Request.IsApproved,
             };
 
-            await _driverRepository.Update(command.Id, driver);
+            var updatedDriver = await _driverRepository.Update(command.Id, driver);
+
+            if (updatedDriver is null)
+            {
+                return new NotFoundResponse();
+            }
+
+            return new UpdateDriverResponse();
         }
     }
 }

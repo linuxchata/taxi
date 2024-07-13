@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Taxi.Domain
@@ -40,6 +41,12 @@ namespace Taxi.Domain
 
         [JsonProperty(PropertyName = "isApproved")]
         public bool IsApproved { get; set; }
+
+        [JsonProperty(PropertyName = "createdDate")]
+        public DateTime CreatedDate { get; set; }
+
+        [JsonProperty(PropertyName = "updatedDate")]
+        public DateTime UpdatedDate { get; set; }
 
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; } = nameof(Driver);

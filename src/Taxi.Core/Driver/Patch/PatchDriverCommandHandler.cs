@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
+using Taxi.Core.Base;
 using Taxi.Core.Infrastructure;
 
 namespace Taxi.Core.Driver.Patch
 {
-    public sealed class PatchDriverCommandHandler : IRequestHandler<PatchDriverCommand>
+    public sealed class PatchDriverCommandHandler : IRequestHandler<PatchDriverCommand, BaseResponse>
     {
         private readonly IDriverRepository _driverRepository;
 
@@ -17,13 +18,25 @@ namespace Taxi.Core.Driver.Patch
             _driverRepository = driverRepository;
         }
 
-        public async Task Handle(PatchDriverCommand command, CancellationToken cancellationToken)
+        public async Task<BaseResponse> Handle(PatchDriverCommand command, CancellationToken cancellationToken)
         {
             var driver = await _driverRepository.GetById(command.Id);
 
+            if (driver is null)
+            {
+                return new NotFoundResponse();
+            }
+
             PatchDriver(command, driver);
 
-            await _driverRepository.Update(command.Id, driver);
+            var updatedDriver = await _driverRepository.Update(command.Id, driver);
+
+            if (updatedDriver is null)
+            {
+                return new NotFoundResponse();
+            }
+
+            return new PatchDriverResponse();
         }
 
         private void PatchDriver(PatchDriverCommand command, Domain.Driver driver)
