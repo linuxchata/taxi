@@ -2,7 +2,7 @@
 
 namespace Taxi.Core.Driver.Get
 {
-    public sealed class GetDriverQuery : IRequest<GetDriverResponse>
+    public sealed class GetDriverQuery : IRequest<GetDriverBaseResponse>
     {
         internal string Id { get; private set; }
 

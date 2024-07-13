@@ -1,6 +1,6 @@
 ﻿namespace Taxi.Core.Driver.Get
 {
-    public sealed class GetDriverResponse
+    public sealed class GetDriverResponse : GetDriverBaseResponse
     {
         public string Id { get; set; } = null!;
 

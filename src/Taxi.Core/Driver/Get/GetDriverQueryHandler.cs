@@ -5,7 +5,7 @@ using Taxi.Core.Infrastructure;
 
 namespace Taxi.Core.Driver.Get
 {
-    public sealed class GetDriverQueryHandler : IRequestHandler<GetDriverQuery, GetDriverResponse>
+    public sealed class GetDriverQueryHandler : IRequestHandler<GetDriverQuery, GetDriverBaseResponse>
     {
         private readonly IDriverRepository _driverRepository;
 
@@ -14,9 +14,14 @@ namespace Taxi.Core.Driver.Get
             _driverRepository = driverRepository;
         }
 
-        public async Task<GetDriverResponse> Handle(GetDriverQuery query, CancellationToken cancellationToken)
+        public async Task<GetDriverBaseResponse> Handle(GetDriverQuery query, CancellationToken cancellationToken)
         {
             var driver = await _driverRepository.GetById(query.Id);
+
+            if (driver is null)
+            {
+                return new GetDriverNotFoundResponse();
+            }
 
             var mapped = new GetDriverResponse
             {

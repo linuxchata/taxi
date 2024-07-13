@@ -44,9 +44,16 @@ namespace Taxi.Repository
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
-            var driver = await container.ReadItemAsync<Driver>(id, new PartitionKey(id));
+            try
+            {
+                var driver = await container.ReadItemAsync<Driver>(id, new PartitionKey(id));
 
-            return driver.Resource;
+                return driver.Resource;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null!;
+            }
         }
 
         public async Task<string> Create(Driver driver)

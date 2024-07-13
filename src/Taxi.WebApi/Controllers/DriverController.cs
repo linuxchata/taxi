@@ -1,8 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using Asp.Versioning;
-using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -40,11 +38,18 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// <returns>Returns a driver</returns>
     [HttpGet("{id}")]
     [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType<GetDriverResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<GetDriverResponse>(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetDriverResponse>> Get([FromRoute] string id)
     {
         var response = await _mediator.Send(new GetDriverQuery(id));
-        return Ok(response);
+
+        return response switch
+        {
+            GetDriverNotFoundResponse => NotFound(string.Empty),
+            GetDriverResponse => Ok(response),
+            _ => StatusCode(501),
+        };
     }
 
     /// <summary>
