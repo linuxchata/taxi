@@ -281,6 +281,40 @@
 					"response": []
 				},
 				{
+					"name": "Patch",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"op\": \"replace\",\r\n    \"path\": \"/firstName\",\r\n    \"value\": \"Barry\"\r\n  },\r\n  {\r\n    \"op\": \"replace\",\r\n    \"path\": \"/lastName\",\r\n    \"value\": \"Space\"\r\n  }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/Passenger/ab5bbc2a-b163-400f-8bde-955252eceed1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"Passenger",
+								"ab5bbc2a-b163-400f-8bde-955252eceed1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Delete",
 					"request": {
 						"method": "DELETE",
