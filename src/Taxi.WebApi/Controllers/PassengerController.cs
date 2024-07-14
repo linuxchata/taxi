@@ -3,12 +3,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using Asp.Versioning;
 using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Taxi.Core.Base;
+using Taxi.Core.Driver.Patch;
 using Taxi.Core.Passenger.Create;
 using Taxi.Core.Passenger.Delete;
 using Taxi.Core.Passenger.Get;
 using Taxi.Core.Passenger.GetAll;
+using Taxi.Core.Passenger.Patch;
 using Taxi.Core.Passenger.Update;
 
 namespace Taxi.WebApi.Controllers;
@@ -90,6 +93,28 @@ public class PassengerController(IMediator _mediator) : ControllerBase
         };
     }
 
+    /// <summary>
+    /// Patches the passenger
+    /// </summary>
+    /// <param name="id">The identifier of the passenger</param>
+    /// <param name="request">Request to patch the passenger</param>
+    [HttpPatch("{id}")]
+    [Consumes(MediaTypeNames.Application.JsonPatch)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult> Patch(
+        [FromRoute] string id,
+        [FromBody] JsonPatchDocument<PatchPassengerRequest> request)
+    {
+        var response = await _mediator.Send(new PatchPassengerCommand(id, request));
+
+        return response switch
+        {
+            NotFoundResponse => NotFound(),
+            PatchPassengerResponse => NoContent(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented),
+        };
+    }
     /// <summary>
     /// Deletes the passenger
     /// </summary>
