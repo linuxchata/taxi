@@ -7,6 +7,12 @@ namespace Taxi.gRPC.Services;
 
 public sealed class DriverService(IMediator mediator) : Driver.DriverBase
 {
+    /// <summary>
+    /// Gets a driver
+    /// </summary>
+    /// <param name="request">Get driver request</param>
+    /// <param name="context">Server call context</param>
+    /// <returns>Returns a driver</returns>
     public override async Task<GetDriverReply> GetDriver(GetDriverRequest request, ServerCallContext context)
     {
         var response = await mediator.Send(new GetDriverQuery(request.Id));

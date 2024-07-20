@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 option csharp_namespace = "Taxi.gRPC";
 
 package driver;
@@ -7,7 +9,9 @@ package driver;
 // The driver service definition.
 service Driver {
   // Gets a driver
-  rpc GetDriver (GetDriverRequest) returns (GetDriverReply);
+  rpc GetDriver (GetDriverRequest) returns (GetDriverReply) {
+    option (google.api.http) = { get: "/driver/{id}" };
+  };
 }
 
 // The request message containing a driver's id.

@@ -7,6 +7,12 @@ namespace Taxi.gRPC.Services;
 
 public sealed class PassengerService(IMediator mediator) : Passenger.PassengerBase
 {
+    /// <summary>
+    /// Gets a passenger
+    /// </summary>
+    /// <param name="request">Get passenger request</param>
+    /// <param name="context">Server call context</param>
+    /// <returns>Returns a passenger</returns>
     public override async Task<GetPassengerReply> GetPassenger(GetPassengerRequest request, ServerCallContext context)
     {
         var response = await mediator.Send(new GetPassengerQuery(request.Id));
