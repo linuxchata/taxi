@@ -43,9 +43,11 @@ namespace Taxi.Repository
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
+            var pk = new PartitionKey(BuildPartitionKey(id));
+
             try
             {
-                var response = await container.ReadItemAsync<Passenger>(id, new PartitionKey(id));
+                var response = await container.ReadItemAsync<Passenger>(id, pk);
 
                 return response.Resource;
             }
@@ -61,7 +63,7 @@ namespace Taxi.Repository
             var container = client.GetContainer(DatabaseId, Container);
 
             passenger.Id = Guid.NewGuid().ToString().ToLower();
-            passenger.Pk = passenger.Id;
+            passenger.Pk = BuildPartitionKey(passenger.Id);
             passenger.CreatedDate = DateTime.UtcNow;
             passenger.UpdatedDate = passenger.CreatedDate;
 
@@ -83,15 +85,15 @@ namespace Taxi.Repository
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
-            passenger.Id = id.ToString().ToLower();
-            passenger.Pk = passenger.Id;
+            passenger.Id = id.ToLower();
+            passenger.Pk = BuildPartitionKey(passenger.Id);
             passenger.UpdatedDate = DateTime.UtcNow;
 
             try
             {
                 var response = await container.ReplaceItemAsync<Passenger>(
                  passenger,
-                 id.ToString(),
+                 id,
                  requestOptions: new ItemRequestOptions
                  {
                      PreTriggers = new List<string>
@@ -113,11 +115,11 @@ namespace Taxi.Repository
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
-            var pk = id.ToString().ToLower();
+            var pk = new PartitionKey(BuildPartitionKey(id));
 
             try
             {
-                await container.DeleteItemAsync<Passenger>(id.ToString(), new PartitionKey(pk));
+                await container.DeleteItemAsync<Passenger>(id, pk);
 
                 return true;
             }
@@ -125,6 +127,11 @@ namespace Taxi.Repository
             {
                 return false;
             }
+        }
+
+        private string BuildPartitionKey(string id)
+        {
+            return $"{Type}:{id.ToLower()}";
         }
 
         private bool IsNotFound(CosmosException ex)

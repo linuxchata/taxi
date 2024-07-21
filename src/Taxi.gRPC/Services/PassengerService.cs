@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using Google.Rpc;
+using Grpc.Core;
 using MediatR;
 using Taxi.Core.Base;
 using Taxi.Core.Passenger.Get;
@@ -21,7 +22,13 @@ public sealed class PassengerService(IMediator mediator) : Passenger.PassengerBa
 
         if (castedResponse == null || response is NotFoundResponse)
         {
-            return null!;
+            var status = new Google.Rpc.Status
+            {
+                Code = (int)Code.NotFound,
+                Message = $"Passenger with identifier [{request.Id}] was not found",
+            };
+
+            throw status.ToRpcException();
         }
 
         return new GetPassengerReply

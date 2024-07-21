@@ -1,3 +1,5 @@
+using Google.Protobuf.WellKnownTypes;
+using Google.Rpc;
 using Grpc.Core;
 using MediatR;
 using Taxi.Core.Base;
@@ -21,7 +23,13 @@ public sealed class DriverService(IMediator mediator) : Driver.DriverBase
 
         if (castedResponse == null || response is NotFoundResponse)
         {
-            return null!;
+            var status = new Google.Rpc.Status
+            {
+                Code = (int)Code.NotFound,
+                Message = $"Driver with identifier [{request.Id}] was not found",
+            };
+
+            throw status.ToRpcException();
         }
 
         return new GetDriverReply
