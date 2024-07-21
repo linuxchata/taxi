@@ -4,6 +4,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Taxi.Core;
+using Taxi.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(serverOptions =>
@@ -27,7 +28,7 @@ builder.Services.AddApiVersioning(option =>
     options.SubstituteApiVersionInUrl = true;
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<DependencyInjection>());
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<Taxi.Core.DependencyInjection>());
 builder.Services.AddSwaggerGen(c =>
 {
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
@@ -39,6 +40,8 @@ builder.Services.AddHealthChecks();
 Taxi.Repository.DependencyInjection.Register(builder.Services);
 
 var app = builder.Build();
+
+await Initialization.Init(app.Configuration);
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())

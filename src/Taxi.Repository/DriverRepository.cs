@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Scripts;
 using Microsoft.Extensions.Configuration;
 using Taxi.Core.Infrastructure;
 using Taxi.Domain;
@@ -61,8 +60,6 @@ namespace Taxi.Repository
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
-            await CreateTrigger(container);
-
             driver.Id = Guid.NewGuid().ToString().ToLower();
             driver.Pk = driver.Id;
             driver.CreatedDate = DateTime.UtcNow;
@@ -85,8 +82,6 @@ namespace Taxi.Repository
         {
             using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
-
-            await CreateTrigger(container);
 
             driver.Id = id.ToString().ToLower();
             driver.Pk = driver.Id;
@@ -129,28 +124,6 @@ namespace Taxi.Repository
             catch (CosmosException ex) when (IsNotFound(ex))
             {
                 return false;
-            }
-        }
-
-        private async Task CreateTrigger(Container container)
-        {
-            var triggerProperties = new TriggerProperties
-            {
-                Id = nameof(DriverPreTriggers.ValidateDriverPreTrigger),
-                Body = DriverPreTriggers.ValidateDriverPreTrigger,
-                TriggerOperation = TriggerOperation.All, // For Create & Update operation, All must be used
-                TriggerType = TriggerType.Pre,
-            };
-
-            try
-            {
-                await container.Scripts.ReadTriggerAsync(nameof(DriverPreTriggers.ValidateDriverPreTrigger));
-                await container.Scripts.ReplaceTriggerAsync(triggerProperties);
-            }
-            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                await container.Scripts.CreateTriggerAsync(triggerProperties);
-                return;
             }
         }
 
