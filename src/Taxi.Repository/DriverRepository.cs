@@ -26,12 +26,13 @@ namespace Taxi.Repository
 
         public async Task<IEnumerable<Driver>> GetAll()
         {
-            using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
-            var sql = $"SELECT * FROM c WHERE c.type = '{Type}'";
+            var query = new QueryDefinition("SELECT * FROM c WHERE c.type = @type")
+                .WithParameter("@type", Type);
 
-            var iterator = container.GetItemQueryIterator<Driver>(sql);
+            using var iterator = container.GetItemQueryIterator<Driver>(query);
 
             var documents = await iterator.ReadNextAsync();
 
@@ -40,7 +41,7 @@ namespace Taxi.Repository
 
         public async Task<Driver> GetById(string id)
         {
-            using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
             var pk = new PartitionKey(BuildPartitionKey(id));
@@ -59,7 +60,7 @@ namespace Taxi.Repository
 
         public async Task<string> Create(Driver driver)
         {
-            using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
             driver.Id = Guid.NewGuid().ToString().ToLower();
@@ -82,7 +83,7 @@ namespace Taxi.Repository
 
         public async Task<Driver> Update(string id, Driver driver)
         {
-            using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
             driver.Id = id.ToLower();
@@ -112,7 +113,7 @@ namespace Taxi.Repository
 
         public async Task<bool> Delete(string id)
         {
-            using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
             var pk = new PartitionKey(BuildPartitionKey(id));

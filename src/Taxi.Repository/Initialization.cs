@@ -14,21 +14,21 @@ namespace Taxi.Repository
 
         public static async Task Init(IConfiguration configuration)
         {
-            using var client = CosmosDbConnectionBuilder.GetClient(configuration);
+            var client = CosmosDbConnectionBuilder.GetClient(configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
-            await CreateTrigger(
+            await CreatePreTrigger(
                 container,
                 nameof(DriverPreTriggers.ValidateDriverPreTrigger),
                 DriverPreTriggers.ValidateDriverPreTrigger);
 
-            await CreateTrigger(
+            await CreatePreTrigger(
                 container,
                 nameof(PassengerPreTriggers.ValidatePassengerPreTrigger),
                 PassengerPreTriggers.ValidatePassengerPreTrigger);
         }
 
-        private static async Task CreateTrigger(Container container, string triggerId, string trigger)
+        private static async Task CreatePreTrigger(Container container, string triggerId, string trigger)
         {
             var triggerProperties = new TriggerProperties
             {

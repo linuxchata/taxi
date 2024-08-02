@@ -26,12 +26,13 @@ namespace Taxi.Repository
 
         public async Task<IEnumerable<Passenger>> GetAll()
         {
-            using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
-            var sql = $"SELECT * FROM c WHERE c.type = '{Type}'";
+            var query = new QueryDefinition("SELECT * FROM c WHERE c.type = @type")
+                .WithParameter("@type", Type);
 
-            var iterator = container.GetItemQueryIterator<Passenger>(sql);
+            var iterator = container.GetItemQueryIterator<Passenger>(query);
 
             var documents = await iterator.ReadNextAsync();
 
@@ -40,7 +41,7 @@ namespace Taxi.Repository
 
         public async Task<Passenger> GetById(string id)
         {
-            using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
             var pk = new PartitionKey(BuildPartitionKey(id));
@@ -59,7 +60,7 @@ namespace Taxi.Repository
 
         public async Task<string> Create(Passenger passenger)
         {
-            using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
             passenger.Id = Guid.NewGuid().ToString().ToLower();
@@ -82,7 +83,7 @@ namespace Taxi.Repository
 
         public async Task<Passenger> Update(string id, Passenger passenger)
         {
-            using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
             passenger.Id = id.ToLower();
@@ -112,7 +113,7 @@ namespace Taxi.Repository
 
         public async Task<bool> Delete(string id)
         {
-            using var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
             var container = client.GetContainer(DatabaseId, Container);
 
             var pk = new PartitionKey(BuildPartitionKey(id));
