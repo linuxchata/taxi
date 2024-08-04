@@ -3,22 +3,24 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using Asp.Versioning;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Taxi.Core.Base;
-using Taxi.Core.Driver.Patch;
 using Taxi.Core.Passenger.Create;
 using Taxi.Core.Passenger.Delete;
 using Taxi.Core.Passenger.Get;
 using Taxi.Core.Passenger.GetAll;
 using Taxi.Core.Passenger.Patch;
 using Taxi.Core.Passenger.Update;
+using Taxi.WebApi.Authentication;
 
 namespace Taxi.WebApi.Controllers;
 
 [ApiController]
 [ApiVersion(1.0)]
 [Route("api/v{version:apiVersion}/[controller]")]
+[Authorize(Policy.ApiKey)]
 public class PassengerController(IMediator _mediator) : ControllerBase
 {
     /// <summary>
@@ -27,6 +29,7 @@ public class PassengerController(IMediator _mediator) : ControllerBase
     /// <returns>Returns all passengers</returns>
     [HttpGet]
     [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType<GetPassengersResponse>(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetPassengersResponse>> GetAll()
     {
@@ -41,6 +44,7 @@ public class PassengerController(IMediator _mediator) : ControllerBase
     /// <returns>Returns a passenger</returns>
     [HttpGet("{id}", Name = "GetPassenger")]
     [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType<GetPassengerResponse>(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetPassengerResponse>> Get2([FromRoute] string id)
@@ -62,6 +66,7 @@ public class PassengerController(IMediator _mediator) : ControllerBase
     [HttpPost]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<string>> Create([FromBody][Required] CreatePassengerRequest request)
     {
@@ -78,6 +83,7 @@ public class PassengerController(IMediator _mediator) : ControllerBase
     /// <param name="request">Request to update the passenger</param>
     [HttpPut("{id}")]
     [Consumes(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Update(
         [FromRoute] string id,
@@ -100,6 +106,7 @@ public class PassengerController(IMediator _mediator) : ControllerBase
     /// <param name="request">Request to patch the passenger</param>
     [HttpPatch("{id}")]
     [Consumes(MediaTypeNames.Application.JsonPatch)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Patch(
@@ -120,6 +127,7 @@ public class PassengerController(IMediator _mediator) : ControllerBase
     /// </summary>
     /// <param name="id">The identifier of the passenger</param>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Delete([FromRoute] string id)
