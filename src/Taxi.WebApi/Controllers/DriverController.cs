@@ -28,6 +28,7 @@ public class DriverController(IMediator _mediator) : ControllerBase
     /// <returns>Returns all drivers</returns>
     [HttpGet]
     [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType<GetDriversResponse>(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetDriversResponse>> GetAll()
     {
