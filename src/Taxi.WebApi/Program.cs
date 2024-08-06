@@ -15,7 +15,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     });
 });
 
-builder.Configuration.AddJsonFile("appsettings.local.json");
+builder.Configuration.AddJsonFile("appsettings.local.json", optional: true);
 
 // Add services to the container
 builder.Services.AddControllers().AddNewtonsoftJson();

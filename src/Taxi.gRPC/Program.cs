@@ -4,7 +4,7 @@ using Taxi.gRPC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("appsettings.local.json");
+builder.Configuration.AddJsonFile("appsettings.local.json", optional: true);
 
 // Add services to the container
 builder.Services.AddGrpc();
