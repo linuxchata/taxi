@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Taxi.WebApi.Authentication;
+using Taxi.WebApi.Configuration;
 
 namespace Taxi.WebApi.ServiceCollectionExtensions;
 
@@ -13,7 +14,7 @@ public static class SecurityServiceCollectionExtension
         IConfiguration configuration,
         IWebHostEnvironment webHostEnvironment)
     {
-        if (webHostEnvironment.IsDevelopment())
+        if (webHostEnvironment.IsLocal())
         {
             services
             .AddAuthentication(Scheme.ApiKey)

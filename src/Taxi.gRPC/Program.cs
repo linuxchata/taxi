@@ -1,20 +1,14 @@
-using Microsoft.OpenApi.Models;
 using Taxi.Core;
+using Taxi.gRPC.ServiceCollectionExtensions;
 using Taxi.gRPC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddGrpc();
-builder.Services.AddGrpcSwagger();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Taxi gRPC", Version = "v1" });
+builder.Configuration.AddJsonFile("appsettings.local.json");
 
-    var filePath = Path.Combine(System.AppContext.BaseDirectory, "Taxi.gRPC.xml");
-    c.IncludeXmlComments(filePath);
-    c.IncludeGrpcXmlComments(filePath, includeControllerXmlComments: true);
-});
+// Add services to the container
+builder.Services.AddGrpc();
+builder.Services.AddSwagger();
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<DependencyInjection>());
 
@@ -22,8 +16,7 @@ Taxi.Repository.DependencyInjection.Register(builder.Services);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-
+// Configure the HTTP request pipeline
 app.UseSwagger();
 
 if (app.Environment.IsDevelopment())
