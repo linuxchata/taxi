@@ -1,6 +1,7 @@
 using System.Security.Authentication;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.FeatureManagement;
 using Taxi.Repository;
 using Taxi.WebApi.Extensions;
 using Taxi.WebApi.ServiceCollectionExtensions;
@@ -22,9 +23,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<Taxi.Core.DependencyInjection>());
 builder.Services.AddSwagger();
 
-builder.Services.AddSecurity(builder.Configuration);
+builder.Services.AddSecurity(builder.Configuration, builder.Environment);
 
 builder.Services.AddHealthChecks();
+
+builder.Services.AddFeatureManagement();
 
 DependencyInjection.Register(builder.Services);
 

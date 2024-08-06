@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Taxi.Core.Base;
 using Taxi.Core.Passenger.Create;
 using Taxi.Core.Passenger.Delete;
@@ -14,6 +15,7 @@ using Taxi.Core.Passenger.GetAll;
 using Taxi.Core.Passenger.Patch;
 using Taxi.Core.Passenger.Update;
 using Taxi.WebApi.Authentication;
+using Taxi.WebApi.FeatureFlags;
 
 namespace Taxi.WebApi.Controllers;
 
@@ -21,6 +23,7 @@ namespace Taxi.WebApi.Controllers;
 [ApiVersion(1.0)]
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(Policy.ApiKey)]
+[FeatureGate(CustomFeatureFlags.Passenger)]
 public class PassengerController(IMediator _mediator) : ControllerBase
 {
     /// <summary>

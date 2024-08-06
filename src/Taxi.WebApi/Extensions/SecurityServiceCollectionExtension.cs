@@ -8,15 +8,27 @@ namespace Taxi.WebApi.ServiceCollectionExtensions;
 /// </summary>
 public static class SecurityServiceCollectionExtension
 {
-    public static IServiceCollection AddSecurity(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddSecurity(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        IWebHostEnvironment webHostEnvironment)
     {
-        var apiKey = configuration.GetValue<string>("ApiKey")!.ToSecureString();
-
-        services
+        if (webHostEnvironment.IsDevelopment())
+        {
+            services
             .AddAuthentication(Scheme.ApiKey)
-            .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(
-                Scheme.ApiKey,
-                x => x.ApiKey = new NetworkCredential(string.Empty, apiKey).SecurePassword);
+            .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationLocalHandler>(Scheme.ApiKey, null);
+        }
+        else
+        {
+            var apiKey = configuration.GetValue<string>("ApiKey")!.ToSecureString();
+
+            services
+                .AddAuthentication(Scheme.ApiKey)
+                .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(
+                    Scheme.ApiKey,
+                    x => x.ApiKey = new NetworkCredential(string.Empty, apiKey).SecurePassword);
+        }
 
         services.AddAuthorization(options =>
         {
