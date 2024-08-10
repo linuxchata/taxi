@@ -10,12 +10,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - uses: azure/docker-login@v2
+      with:
+        login-server: 'ACR_SERVER'
+        username: 'ACR_USER_NAME'
+        password: 'ACR_PASSWORD'
     - uses: actions/checkout@v4
     - name: Build the Docker image for API project
       run: |
         cd src/
         docker build . --file ./Taxi.WebApi/Dockerfile --tag latest
+        docker push taxiwebapi:latest
     - name: Build the Docker image for gRPC project
       run: |
         cd src/
         docker build . --file ./Taxi.gRPC/Dockerfile --tag latest
+        docker push taxigrpc:latest
+
