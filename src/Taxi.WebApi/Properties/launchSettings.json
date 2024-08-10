@@ -8,14 +8,15 @@
         "ASPNETCORE_ENVIRONMENT": "Local"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:6001"
+      "applicationUrl": "https://localhost:6002"
     },
     "Container (Dockerfile)": {
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "8081"
+        "ASPNETCORE_HTTP_PORTS": "6001",
+        "ASPNETCORE_HTTPS_PORTS": "6002"
       },
       "publishAllPorts": true,
       "useSSL": true
