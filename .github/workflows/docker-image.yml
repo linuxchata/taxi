@@ -12,6 +12,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image for API project
-      run: docker build . --file ./src/Taxi.WebApi/Dockerfile --tag my-image-name:$(date +%s)
+      run: |
+        cd src/
+        docker build . --file ./Taxi.WebApi/Dockerfile --tag latest
     - name: Build the Docker image for gRPC project
-      run: docker build . --file ./src/Taxi.gRPC/Dockerfile --tag my-image-name:$(date +%s)
+      run: |
+        cd src/
+        docker build . --file ./Taxi.gRPC/Dockerfile --tag latest
