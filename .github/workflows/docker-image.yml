@@ -7,14 +7,11 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
-    - name: Build the Docker image for API
-      run: docker build . --file src/Taxi.WebApi/Dockerfile --tag my-image-name:$(date +%s)
-    - name: Build the src/Taxi.gRPC/Dockerfile image for gRPC
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: Build the Docker image for API project
+      run: docker build . --file ./src/Taxi.WebApi/Dockerfile --tag my-image-name:$(date +%s)
+    - name: Build the Docker image for gRPC project
+      run: docker build . --file ./src/Taxi.gRPC/Dockerfile --tag my-image-name:$(date +%s)
