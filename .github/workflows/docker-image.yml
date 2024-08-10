@@ -12,18 +12,18 @@ jobs:
     steps:
     - uses: azure/docker-login@v2
       with:
-        login-server: 'ACR_SERVER'
-        username: 'ACR_USER_NAME'
-        password: 'ACR_PASSWORD'
+        login-server: ${{ secrets.ACR_SERVER }}
+        username: ${{ secrets.ACR_USER_NAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
     - uses: actions/checkout@v4
     - name: Build the Docker image for API project
       run: |
         cd src/
-        docker build . --file ./Taxi.WebApi/Dockerfile --tag taxiwebapi:latest
-        docker push taxiwebapi:latest
+        docker build . --file ./Taxi.WebApi/Dockerfile --tag ${{ secrets.ACR_SERVER }}/taxiwebapi:latest
+        docker push ${{ secrets.ACR_SERVER }}/taxiwebapi:latest
     - name: Build the Docker image for gRPC project
       run: |
         cd src/
-        docker build . --file ./Taxi.gRPC/Dockerfile --tag taxigrpc:latest
-        docker push taxigrpc:latest
+        docker build . --file ./Taxi.gRPC/Dockerfile --tag ${{ secrets.ACR_SERVER }}/taxiwebapi:latest
+        docker push ${{ secrets.ACR_SERVER }}/taxiwebapi:latest
 
