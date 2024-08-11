@@ -6,7 +6,7 @@ using Taxi.Repository.Triggers.Driver;
 
 namespace Taxi.Repository
 {
-    public class Initialization
+    public static class Initialization
     {
         private const string DatabaseId = "taxi";
 

@@ -2,6 +2,9 @@
 
 namespace Taxi.WebApi.Extensions;
 
+/// <summary>
+/// Contains extension methods to <see cref="IServiceCollection"/>
+/// </summary>
 public static class ApiVersioningServiceCollectionExtension
 {
     public static IServiceCollection AddVersioning(this IServiceCollection services)

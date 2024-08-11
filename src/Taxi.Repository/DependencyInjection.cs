@@ -3,7 +3,7 @@ using Taxi.Core.Infrastructure;
 
 namespace Taxi.Repository
 {
-    public class DependencyInjection
+    public static class DependencyInjection
     {
         public static void Register(IServiceCollection serviceCollection)
         {

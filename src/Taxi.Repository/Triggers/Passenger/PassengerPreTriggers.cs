@@ -1,6 +1,6 @@
 ﻿namespace Taxi.Repository.Triggers.Driver
 {
-    internal class PassengerPreTriggers
+    internal static class PassengerPreTriggers
     {
         internal const string ValidatePassengerPreTrigger = @"
             function validatePassengerPreTrigger() {
