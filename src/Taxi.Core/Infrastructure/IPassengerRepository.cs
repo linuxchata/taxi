@@ -9,9 +9,9 @@ namespace Taxi.Core.Infrastructure
 
         Task<Domain.Passenger> GetById(string id);
 
-        Task<string> Create(Domain.Passenger driver);
+        Task<string> Create(Domain.Passenger passenger);
 
-        Task<Domain.Passenger> Update(string id, Domain.Passenger driver);
+        Task<Domain.Passenger> Update(string id, Domain.Passenger passenger);
 
         Task<bool> Delete(string id);
     }
