@@ -2,7 +2,7 @@
 
 namespace Taxi.Core.Helpers
 {
-    public class PatchOperationHelper
+    public static class PatchOperationHelper
     {
         public static Operation<T> Map<T>(Operation operation) where T : class
         {
