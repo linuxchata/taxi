@@ -46,7 +46,6 @@ namespace Taxi.Repository
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 await container.Scripts.CreateTriggerAsync(triggerProperties);
-                return;
             }
         }
     }
