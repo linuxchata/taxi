@@ -1,4 +1,5 @@
 using System.Security.Authentication;
+using Azure.Identity;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
@@ -16,6 +17,15 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 });
 
 builder.Configuration.AddJsonFile("appsettings.local.json", optional: true);
+
+if (builder.Environment.IsProduction())
+{
+    var keyVaultName = builder.Configuration["KeyVaultName"];
+    builder.Configuration
+        .AddAzureKeyVault(
+            new Uri($"https://{keyVaultName}.vault.azure.net/"),
+            new DefaultAzureCredential());
+}
 
 // Add services to the container
 builder.Services.AddControllers().AddNewtonsoftJson();
@@ -52,7 +62,7 @@ app.MapHealthChecks("/healthcheck", new HealthCheckOptions
     {
         [HealthStatus.Healthy] = StatusCodes.Status200OK,
         [HealthStatus.Degraded] = StatusCodes.Status200OK,
-        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable,
     }
 });
 

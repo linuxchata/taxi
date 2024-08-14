@@ -1,3 +1,4 @@
+using Azure.Identity;
 using Taxi.Core;
 using Taxi.gRPC.ServiceCollectionExtensions;
 using Taxi.gRPC.Services;
@@ -5,6 +6,15 @@ using Taxi.gRPC.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.local.json", optional: true);
+
+if (builder.Environment.IsProduction())
+{
+    var keyVaultName = builder.Configuration["KeyVaultName"];
+    builder.Configuration
+        .AddAzureKeyVault(
+            new Uri($"https://{keyVaultName}.vault.azure.net/"),
+            new DefaultAzureCredential());
+}
 
 // Add services to the container
 builder.Services.AddGrpc();
