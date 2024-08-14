@@ -1,5 +1,6 @@
 using Azure.Identity;
 using Taxi.Core;
+using Taxi.gRPC.Configuration;
 using Taxi.gRPC.ServiceCollectionExtensions;
 using Taxi.gRPC.Services;
 
@@ -29,7 +30,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline
 app.UseSwagger();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsLocal() || app.Environment.IsDevelopment())
 {
     app.UseSwaggerUI(c =>
     {
