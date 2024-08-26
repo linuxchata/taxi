@@ -77,4 +77,6 @@ app.MapHealthChecks("/healthcheck", new HealthCheckOptions
     }
 });
 
+app.MapGet("/", () => "REST API endpoints are up and running");
+
 app.Run();

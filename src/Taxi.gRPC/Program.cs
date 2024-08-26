@@ -30,13 +30,10 @@ var app = builder.Build();
 // Configure the HTTP request pipeline
 app.UseSwagger();
 
-if (app.Environment.IsLocal() || app.Environment.IsDevelopment())
+app.UseSwaggerUI(c =>
 {
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Taxi gRPC v1");
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Taxi gRPC v1");
+});
 
 app.MapGrpcService<DriverService>();
 app.MapGrpcService<PassengerService>();
