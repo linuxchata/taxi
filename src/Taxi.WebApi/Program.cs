@@ -1,5 +1,6 @@
 using System.Security.Authentication;
 using Azure.Identity;
+using GraphQL;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
@@ -28,11 +29,16 @@ if (builder.Environment.IsProduction())
 }
 
 // Add services to the container
+builder.Services.AddHttpContextAccessor(); // For GraphQL authorization
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddProblemDetails();
 builder.Services.AddVersioning();
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<Taxi.Core.DependencyInjection>());
+
+builder.Services.AddGraphQL();
+
 builder.Services.AddSwagger();
 
 builder.Services.AddSecurity(builder.Configuration, builder.Environment);
@@ -52,9 +58,14 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseGraphQL();
+
 app.MapHealthChecks("/healthcheck", new HealthCheckOptions
 {
     AllowCachingResponses = false,

@@ -10,11 +10,11 @@ public class ApiKeyAuthenticationLocalHandler(
     ILoggerFactory logger,
     UrlEncoder encoder) : AuthenticationHandler<ApiKeyAuthenticationOptions>(options, logger, encoder)
 {
-    protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var authenticationTicket = new AuthenticationTicket(CreateClaimsPrincipal(), Scheme.Name);
 
-        return await Task.FromResult(AuthenticateResult.Success(authenticationTicket));
+        return Task.FromResult(AuthenticateResult.Success(authenticationTicket));
     }
 
     private ClaimsPrincipal CreateClaimsPrincipal()

@@ -10,11 +10,11 @@ public class ApiKeyAuthenticationHandler(
     ILoggerFactory logger,
     UrlEncoder encoder) : AuthenticationHandler<ApiKeyAuthenticationOptions>(options, logger, encoder)
 {
-    protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         if (!Request.Headers.TryGetValue(Header.ApiKey, out var apiKeyValues))
         {
-            return AuthenticateResult.Fail("Unauthorized");
+            return Task.FromResult(AuthenticateResult.Fail("Unauthorized"));
         }
 
         var providedApiKey = apiKeyValues.FirstOrDefault();
@@ -22,12 +22,12 @@ public class ApiKeyAuthenticationHandler(
 
         if (!string.Equals(providedApiKey, expectedApiKey.FromSecureString(), StringComparison.OrdinalIgnoreCase))
         {
-            return AuthenticateResult.Fail("Unauthorized");
+            return Task.FromResult(AuthenticateResult.Fail("Unauthorized"));
         }
 
         var authenticationTicket = new AuthenticationTicket(CreateClaimsPrincipal(), Scheme.Name);
 
-        return await Task.FromResult(AuthenticateResult.Success(authenticationTicket));
+        return Task.FromResult(AuthenticateResult.Success(authenticationTicket));
     }
 
     private ClaimsPrincipal CreateClaimsPrincipal()
