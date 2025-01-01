@@ -130,12 +130,12 @@ namespace Taxi.Repository
             }
         }
 
-        private string BuildPartitionKey(string id)
+        private static string BuildPartitionKey(string id)
         {
             return $"{Type}:{id.ToLower()}";
         }
 
-        private bool IsNotFound(CosmosException ex)
+        private static bool IsNotFound(CosmosException ex)
         {
             return ex.StatusCode == System.Net.HttpStatusCode.NotFound;
         }
