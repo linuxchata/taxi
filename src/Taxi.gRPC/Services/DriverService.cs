@@ -1,4 +1,3 @@
-using Google.Protobuf.WellKnownTypes;
 using Google.Rpc;
 using Grpc.Core;
 using MediatR;

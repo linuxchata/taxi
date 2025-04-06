@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using MediatR;
 using Taxi.Core.Base;
-using Taxi.Core.Driver.Delete;
 using Taxi.Core.Infrastructure;
 
 namespace Taxi.Core.Passenger.Delete

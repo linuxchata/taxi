@@ -1,6 +1,5 @@
 using Azure.Identity;
 using Taxi.Core;
-using Taxi.gRPC.Configuration;
 using Taxi.gRPC.ServiceCollectionExtensions;
 using Taxi.gRPC.Services;
 
