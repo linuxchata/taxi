@@ -5,9 +5,9 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Taxi.Core.Infrastructure;
 using Taxi.Domain;
-using Taxi.Repository.Triggers.Driver;
+using Taxi.Repository.CosmosDb.Triggers.Driver;
 
-namespace Taxi.Repository
+namespace Taxi.Repository.CosmosDb
 {
     public sealed class DriverRepository : IDriverRepository
     {
@@ -68,7 +68,7 @@ namespace Taxi.Repository
             driver.CreatedDate = DateTime.UtcNow;
             driver.UpdatedDate = driver.CreatedDate;
 
-            var response = await container.CreateItemAsync<Driver>(
+            var response = await container.CreateItemAsync(
                 driver,
                 requestOptions: new ItemRequestOptions
                 {
@@ -92,7 +92,7 @@ namespace Taxi.Repository
 
             try
             {
-                var response = await container.ReplaceItemAsync<Driver>(
+                var response = await container.ReplaceItemAsync(
                     driver,
                     id,
                     requestOptions: new ItemRequestOptions

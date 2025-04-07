@@ -1,4 +1,4 @@
-﻿namespace Taxi.Repository.Triggers.Driver
+﻿namespace Taxi.Repository.CosmosDb.Triggers.Passenger
 {
     internal static class PassengerPreTriggers
     {

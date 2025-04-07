@@ -2,9 +2,10 @@
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Scripts;
 using Microsoft.Extensions.Configuration;
-using Taxi.Repository.Triggers.Driver;
+using Taxi.Repository.CosmosDb.Triggers.Driver;
+using Taxi.Repository.CosmosDb.Triggers.Passenger;
 
-namespace Taxi.Repository
+namespace Taxi.Repository.CosmosDb
 {
     public static class Initialization
     {

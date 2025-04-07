@@ -1,7 +1,7 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 
-namespace Taxi.Repository
+namespace Taxi.Repository.CosmosDb
 {
     public static class CosmosDbConnectionBuilder
     {

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
 using Prometheus;
-using Taxi.Repository;
+using Taxi.Repository.CosmosDb;
 using Taxi.WebApi.Extensions;
 using Taxi.WebApi.ServiceCollectionExtensions;
 
