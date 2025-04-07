@@ -1,143 +1,139 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos;
+﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Taxi.Core.Infrastructure;
 using Taxi.Domain;
 using Taxi.Repository.CosmosDb.Triggers.Passenger;
 
 namespace Taxi.Repository.CosmosDb;
+
+public sealed class PassengerRepository : IPassengerRepository
 {
-    public sealed class PassengerRepository : IPassengerRepository
+    private const string DatabaseId = "taxi";
+
+    private const string Container = "people";
+
+    private const string Type = "Passenger";
+
+    private readonly IConfiguration _configuration;
+
+    public PassengerRepository(IConfiguration configuration)
     {
-        private const string DatabaseId = "taxi";
+        _configuration = configuration;
+    }
 
-        private const string Container = "people";
+    public async Task<IEnumerable<Passenger>> GetAll()
+    {
+        var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+        var container = client.GetContainer(DatabaseId, Container);
 
-        private const string Type = "Passenger";
+        var query = new QueryDefinition("SELECT * FROM c WHERE c.type = @type")
+            .WithParameter("@type", Type);
 
-        private readonly IConfiguration _configuration;
+        var iterator = container.GetItemQueryIterator<Passenger>(query);
 
-        public PassengerRepository(IConfiguration configuration)
+        var documents = await iterator.ReadNextAsync();
+
+        return documents.Resource;
+    }
+
+    public async Task<Passenger> GetById(string id)
+    {
+        var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+        var container = client.GetContainer(DatabaseId, Container);
+
+        var pk = new PartitionKey(BuildPartitionKey(id));
+
+        try
         {
-            _configuration = configuration;
+            var response = await container.ReadItemAsync<Passenger>(id, pk);
+
+            return response.Resource;
         }
-
-        public async Task<IEnumerable<Passenger>> GetAll()
+        catch (CosmosException ex) when (IsNotFound(ex))
         {
-            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
-            var container = client.GetContainer(DatabaseId, Container);
-
-            var query = new QueryDefinition("SELECT * FROM c WHERE c.type = @type")
-                .WithParameter("@type", Type);
-
-            var iterator = container.GetItemQueryIterator<Passenger>(query);
-
-            var documents = await iterator.ReadNextAsync();
-
-            return documents.Resource;
+            return null!;
         }
+    }
 
-        public async Task<Passenger> GetById(string id)
-        {
-            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
-            var container = client.GetContainer(DatabaseId, Container);
+    public async Task<string> Create(Passenger passenger)
+    {
+        var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+        var container = client.GetContainer(DatabaseId, Container);
 
-            var pk = new PartitionKey(BuildPartitionKey(id));
+        passenger.Id = Guid.NewGuid().ToString().ToLower();
+        passenger.Pk = BuildPartitionKey(passenger.Id);
+        passenger.CreatedDate = DateTime.UtcNow;
+        passenger.UpdatedDate = passenger.CreatedDate;
 
-            try
+        var response = await container.CreateItemAsync(
+            passenger,
+            requestOptions: new ItemRequestOptions
             {
-                var response = await container.ReadItemAsync<Passenger>(id, pk);
-
-                return response.Resource;
-            }
-            catch (CosmosException ex) when (IsNotFound(ex))
-            {
-                return null!;
-            }
-        }
-
-        public async Task<string> Create(Passenger passenger)
-        {
-            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
-            var container = client.GetContainer(DatabaseId, Container);
-
-            passenger.Id = Guid.NewGuid().ToString().ToLower();
-            passenger.Pk = BuildPartitionKey(passenger.Id);
-            passenger.CreatedDate = DateTime.UtcNow;
-            passenger.UpdatedDate = passenger.CreatedDate;
-
-            var response = await container.CreateItemAsync(
-                passenger,
-                requestOptions: new ItemRequestOptions
+                PreTriggers = new List<string>
                 {
-                    PreTriggers = new List<string>
-                    {
-                        nameof(PassengerPreTriggers.ValidatePassengerPreTrigger)
-                    }
-                });
+                    nameof(PassengerPreTriggers.ValidatePassengerPreTrigger)
+                }
+            });
 
-            return response.Resource.Id.ToString();
-        }
+        return response.Resource.Id.ToString();
+    }
 
-        public async Task<Passenger> Update(string id, Passenger passenger)
+    public async Task<Passenger> Update(string id, Passenger passenger)
+    {
+        var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+        var container = client.GetContainer(DatabaseId, Container);
+
+        passenger.Id = id.ToLower();
+        passenger.Pk = BuildPartitionKey(passenger.Id);
+        passenger.UpdatedDate = DateTime.UtcNow;
+
+        try
         {
-            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
-            var container = client.GetContainer(DatabaseId, Container);
-
-            passenger.Id = id.ToLower();
-            passenger.Pk = BuildPartitionKey(passenger.Id);
-            passenger.UpdatedDate = DateTime.UtcNow;
-
-            try
-            {
-                var response = await container.ReplaceItemAsync(
-                 passenger,
-                 id,
-                 requestOptions: new ItemRequestOptions
+            var response = await container.ReplaceItemAsync(
+             passenger,
+             id,
+             requestOptions: new ItemRequestOptions
+             {
+                 PreTriggers = new List<string>
                  {
-                     PreTriggers = new List<string>
-                     {
-                        nameof(PassengerPreTriggers.ValidatePassengerPreTrigger)
-                     }
-                 });
+                    nameof(PassengerPreTriggers.ValidatePassengerPreTrigger)
+                 }
+             });
 
-                return response.Resource;
-            }
-            catch (CosmosException ex) when (IsNotFound(ex))
-            {
-                return null!;
-            }
+            return response.Resource;
         }
-
-        public async Task<bool> Delete(string id)
+        catch (CosmosException ex) when (IsNotFound(ex))
         {
-            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
-            var container = client.GetContainer(DatabaseId, Container);
-
-            var pk = new PartitionKey(BuildPartitionKey(id));
-
-            try
-            {
-                await container.DeleteItemAsync<Passenger>(id, pk);
-
-                return true;
-            }
-            catch (CosmosException ex) when (IsNotFound(ex))
-            {
-                return false;
-            }
+            return null!;
         }
+    }
 
-        private string BuildPartitionKey(string id)
+    public async Task<bool> Delete(string id)
+    {
+        var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+        var container = client.GetContainer(DatabaseId, Container);
+
+        var pk = new PartitionKey(BuildPartitionKey(id));
+
+        try
         {
-            return $"{Type}:{id.ToLower()}";
-        }
+            await container.DeleteItemAsync<Passenger>(id, pk);
 
-        private bool IsNotFound(CosmosException ex)
-        {
-            return ex.StatusCode == System.Net.HttpStatusCode.NotFound;
+            return true;
         }
+        catch (CosmosException ex) when (IsNotFound(ex))
+        {
+            return false;
+        }
+    }
+
+    private string BuildPartitionKey(string id)
+    {
+        return $"{Type}:{id.ToLower()}";
+    }
+
+    private bool IsNotFound(CosmosException ex)
+    {
+        return ex.StatusCode == System.Net.HttpStatusCode.NotFound;
     }
 }

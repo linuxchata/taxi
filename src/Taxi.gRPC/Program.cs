@@ -2,7 +2,6 @@ using Azure.Identity;
 using Taxi.Core;
 using Taxi.gRPC.ServiceCollectionExtensions;
 using Taxi.gRPC.Services;
-using Taxi.Repository.CosmosDb;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +22,7 @@ builder.Services.AddSwagger();
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<DependencyInjection>());
 
-Taxi.Repository.CosmosDb.DependencyInjection.Register(builder.Services);
+Taxi.Repository.Sql.DependencyInjection.Register(builder.Services);
 
 var app = builder.Build();
 

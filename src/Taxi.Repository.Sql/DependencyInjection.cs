@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Taxi.Core.Infrastructure;
 
-namespace Taxi.Repository.CosmosDb;
+namespace Taxi.Repository.Sql;
 
 public static class DependencyInjection
 {

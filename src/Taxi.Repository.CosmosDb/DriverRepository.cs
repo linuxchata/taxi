@@ -1,75 +1,97 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos;
+﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Taxi.Core.Infrastructure;
 using Taxi.Domain;
 using Taxi.Repository.CosmosDb.Triggers.Driver;
 
-namespace Taxi.Repository.CosmosDb
+namespace Taxi.Repository.CosmosDb;
+
+public sealed class DriverRepository : IDriverRepository
 {
-    public sealed class DriverRepository : IDriverRepository
+    private const string DatabaseId = "taxi";
+
+    private const string Container = "people";
+
+    private const string Type = "Driver";
+
+    private readonly IConfiguration _configuration;
+
+    public DriverRepository(IConfiguration configuration)
     {
-        private const string DatabaseId = "taxi";
+        _configuration = configuration;
+    }
 
-        private const string Container = "people";
+    public async Task<IEnumerable<Driver>> GetAll()
+    {
+        var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+        var container = client.GetContainer(DatabaseId, Container);
 
-        private const string Type = "Driver";
+        var query = new QueryDefinition("SELECT * FROM c WHERE c.type = @type")
+            .WithParameter("@type", Type);
 
-        private readonly IConfiguration _configuration;
+        using var iterator = container.GetItemQueryIterator<Driver>(query);
 
-        public DriverRepository(IConfiguration configuration)
+        var documents = await iterator.ReadNextAsync();
+
+        return documents.Resource;
+    }
+
+    public async Task<Driver> GetById(string id)
+    {
+        var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+        var container = client.GetContainer(DatabaseId, Container);
+
+        var pk = new PartitionKey(BuildPartitionKey(id));
+
+        try
         {
-            _configuration = configuration;
+            var response = await container.ReadItemAsync<Driver>(id, pk);
+
+            return response.Resource;
         }
-
-        public async Task<IEnumerable<Driver>> GetAll()
+        catch (CosmosException ex) when (IsNotFound(ex))
         {
-            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
-            var container = client.GetContainer(DatabaseId, Container);
-
-            var query = new QueryDefinition("SELECT * FROM c WHERE c.type = @type")
-                .WithParameter("@type", Type);
-
-            using var iterator = container.GetItemQueryIterator<Driver>(query);
-
-            var documents = await iterator.ReadNextAsync();
-
-            return documents.Resource;
+            return null!;
         }
+    }
 
-        public async Task<Driver> GetById(string id)
-        {
-            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
-            var container = client.GetContainer(DatabaseId, Container);
+    public async Task<string> Create(Driver driver)
+    {
+        var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+        var container = client.GetContainer(DatabaseId, Container);
 
-            var pk = new PartitionKey(BuildPartitionKey(id));
+        driver.Id = Guid.NewGuid().ToString().ToLower();
+        driver.Pk = BuildPartitionKey(driver.Id);
+        driver.CreatedDate = DateTime.UtcNow;
+        driver.UpdatedDate = driver.CreatedDate;
 
-            try
+        var response = await container.CreateItemAsync(
+            driver,
+            requestOptions: new ItemRequestOptions
             {
-                var response = await container.ReadItemAsync<Driver>(id, pk);
+                PreTriggers = new List<string>
+                {
+                    nameof(DriverPreTriggers.ValidateDriverPreTrigger)
+                }
+            });
 
-                return response.Resource;
-            }
-            catch (CosmosException ex) when (IsNotFound(ex))
-            {
-                return null!;
-            }
-        }
+        return response.Resource.Id.ToString();
+    }
 
-        public async Task<string> Create(Driver driver)
+    public async Task<Driver> Update(string id, Driver driver)
+    {
+        var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+        var container = client.GetContainer(DatabaseId, Container);
+
+        driver.Id = id.ToLower();
+        driver.Pk = BuildPartitionKey(driver.Id);
+        driver.UpdatedDate = DateTime.UtcNow;
+
+        try
         {
-            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
-            var container = client.GetContainer(DatabaseId, Container);
-
-            driver.Id = Guid.NewGuid().ToString().ToLower();
-            driver.Pk = BuildPartitionKey(driver.Id);
-            driver.CreatedDate = DateTime.UtcNow;
-            driver.UpdatedDate = driver.CreatedDate;
-
-            var response = await container.CreateItemAsync(
+            var response = await container.ReplaceItemAsync(
                 driver,
+                id,
                 requestOptions: new ItemRequestOptions
                 {
                     PreTriggers = new List<string>
@@ -78,66 +100,40 @@ namespace Taxi.Repository.CosmosDb
                     }
                 });
 
-            return response.Resource.Id.ToString();
+            return response.Resource;
         }
-
-        public async Task<Driver> Update(string id, Driver driver)
+        catch (CosmosException ex) when (IsNotFound(ex))
         {
-            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
-            var container = client.GetContainer(DatabaseId, Container);
-
-            driver.Id = id.ToLower();
-            driver.Pk = BuildPartitionKey(driver.Id);
-            driver.UpdatedDate = DateTime.UtcNow;
-
-            try
-            {
-                var response = await container.ReplaceItemAsync(
-                    driver,
-                    id,
-                    requestOptions: new ItemRequestOptions
-                    {
-                        PreTriggers = new List<string>
-                        {
-                            nameof(DriverPreTriggers.ValidateDriverPreTrigger)
-                        }
-                    });
-
-                return response.Resource;
-            }
-            catch (CosmosException ex) when (IsNotFound(ex))
-            {
-                return null!;
-            }
+            return null!;
         }
+    }
 
-        public async Task<bool> Delete(string id)
+    public async Task<bool> Delete(string id)
+    {
+        var client = CosmosDbConnectionBuilder.GetClient(_configuration);
+        var container = client.GetContainer(DatabaseId, Container);
+
+        var pk = new PartitionKey(BuildPartitionKey(id));
+
+        try
         {
-            var client = CosmosDbConnectionBuilder.GetClient(_configuration);
-            var container = client.GetContainer(DatabaseId, Container);
+            await container.DeleteItemAsync<Driver>(id, pk);
 
-            var pk = new PartitionKey(BuildPartitionKey(id));
-
-            try
-            {
-                await container.DeleteItemAsync<Driver>(id, pk);
-
-                return true;
-            }
-            catch (CosmosException ex) when (IsNotFound(ex))
-            {
-                return false;
-            }
+            return true;
         }
-
-        private static string BuildPartitionKey(string id)
+        catch (CosmosException ex) when (IsNotFound(ex))
         {
-            return $"{Type}:{id.ToLower()}";
+            return false;
         }
+    }
 
-        private static bool IsNotFound(CosmosException ex)
-        {
-            return ex.StatusCode == System.Net.HttpStatusCode.NotFound;
-        }
+    private static string BuildPartitionKey(string id)
+    {
+        return $"{Type}:{id.ToLower()}";
+    }
+
+    private static bool IsNotFound(CosmosException ex)
+    {
+        return ex.StatusCode == System.Net.HttpStatusCode.NotFound;
     }
 }

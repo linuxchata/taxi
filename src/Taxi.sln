@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Taxi.Domain", "Taxi.Domain\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Taxi.Repository.CosmosDb", "Taxi.Repository.CosmosDb\Taxi.Repository.CosmosDb.csproj", "{A5468B74-F0B8-40BC-83A9-15860834E65F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Taxi.Repository.Sql", "Taxi.Repository.Sql\Taxi.Repository.Sql.csproj", "{B5468B74-F0B8-40BC-83A9-15860834E65F}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{E56F9050-5152-4274-8D72-E7B96172D728}"
 EndProject
 Global
@@ -41,6 +43,10 @@ Global
 		{A5468B74-F0B8-40BC-83A9-15860834E65F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5468B74-F0B8-40BC-83A9-15860834E65F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5468B74-F0B8-40BC-83A9-15860834E65F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5468B74-F0B8-40BC-83A9-15860834E65F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5468B74-F0B8-40BC-83A9-15860834E65F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5468B74-F0B8-40BC-83A9-15860834E65F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5468B74-F0B8-40BC-83A9-15860834E65F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

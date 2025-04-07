@@ -1,53 +1,51 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos;
+﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Scripts;
 using Microsoft.Extensions.Configuration;
 using Taxi.Repository.CosmosDb.Triggers.Driver;
 using Taxi.Repository.CosmosDb.Triggers.Passenger;
 
-namespace Taxi.Repository.CosmosDb
+namespace Taxi.Repository.CosmosDb;
+
+public static class Initialization
 {
-    public static class Initialization
+    private const string DatabaseId = "taxi";
+
+    private const string Container = "people";
+
+    public static async Task Init(IConfiguration configuration)
     {
-        private const string DatabaseId = "taxi";
+        var client = CosmosDbConnectionBuilder.GetClient(configuration);
+        var container = client.GetContainer(DatabaseId, Container);
 
-        private const string Container = "people";
+        await CreatePreTrigger(
+            container,
+            nameof(DriverPreTriggers.ValidateDriverPreTrigger),
+            DriverPreTriggers.ValidateDriverPreTrigger);
 
-        public static async Task Init(IConfiguration configuration)
+        await CreatePreTrigger(
+            container,
+            nameof(PassengerPreTriggers.ValidatePassengerPreTrigger),
+            PassengerPreTriggers.ValidatePassengerPreTrigger);
+    }
+
+    private static async Task CreatePreTrigger(Container container, string triggerId, string trigger)
+    {
+        var triggerProperties = new TriggerProperties
         {
-            var client = CosmosDbConnectionBuilder.GetClient(configuration);
-            var container = client.GetContainer(DatabaseId, Container);
+            Id = triggerId,
+            Body = trigger,
+            TriggerOperation = TriggerOperation.All, // For Create & Update operation, All must be used
+            TriggerType = TriggerType.Pre,
+        };
 
-            await CreatePreTrigger(
-                container,
-                nameof(DriverPreTriggers.ValidateDriverPreTrigger),
-                DriverPreTriggers.ValidateDriverPreTrigger);
-
-            await CreatePreTrigger(
-                container,
-                nameof(PassengerPreTriggers.ValidatePassengerPreTrigger),
-                PassengerPreTriggers.ValidatePassengerPreTrigger);
+        try
+        {
+            await container.Scripts.ReadTriggerAsync(triggerId);
+            await container.Scripts.ReplaceTriggerAsync(triggerProperties);
         }
-
-        private static async Task CreatePreTrigger(Container container, string triggerId, string trigger)
+        catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
-            var triggerProperties = new TriggerProperties
-            {
-                Id = triggerId,
-                Body = trigger,
-                TriggerOperation = TriggerOperation.All, // For Create & Update operation, All must be used
-                TriggerType = TriggerType.Pre,
-            };
-
-            try
-            {
-                await container.Scripts.ReadTriggerAsync(triggerId);
-                await container.Scripts.ReplaceTriggerAsync(triggerProperties);
-            }
-            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                await container.Scripts.CreateTriggerAsync(triggerProperties);
-            }
+            await container.Scripts.CreateTriggerAsync(triggerProperties);
         }
     }
 }

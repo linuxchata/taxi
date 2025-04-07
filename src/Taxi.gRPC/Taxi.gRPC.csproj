@@ -37,7 +37,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Taxi.Core\Taxi.Core.csproj" />
-    <ProjectReference Include="..\Taxi.Repository\Taxi.Repository.CosmosDb.csproj" />
+    <ProjectReference Include="..\Taxi.Repository.Sql\Taxi.Repository.Sql.csproj" />
   </ItemGroup>
 
 </Project>

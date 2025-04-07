@@ -1,18 +1,17 @@
 ﻿using GraphQL.Types;
 
-namespace Taxi.Domain
+namespace Taxi.Domain;
+
+public class DriverType : ObjectGraphType<Driver>
 {
-    public class DriverType : ObjectGraphType<Driver>
+    public DriverType()
     {
-        public DriverType()
-        {
-            Field(_ => _.Id);
-            Field(_ => _.FirstName);
-            Field(_ => _.LastName);
-            Field(_ => _.Email);
-            Field(_ => _.PhoneNumber);
-            Field(_ => _.Country);
-            Field(_ => _.State);
-        }
+        Field(_ => _.Id);
+        Field(_ => _.FirstName);
+        Field(_ => _.LastName);
+        Field(_ => _.Email);
+        Field(_ => _.PhoneNumber);
+        Field(_ => _.Country);
+        Field(_ => _.State);
     }
 }
