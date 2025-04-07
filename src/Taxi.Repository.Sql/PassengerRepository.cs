@@ -19,21 +19,21 @@ public sealed class PassengerRepository : IPassengerRepository
         using var connection = SqlConnectionBuilder.GetConnection(_configuration);
 
         var passengers = await connection.QueryAsync<Passenger>(@"
-                SELECT 
-                    Id, 
-                    FirstName, 
-                    LastName, 
-                    Email, 
-                    PhoneNumber, 
-                    Country, 
-                    State, 
-                    Rating, 
-                    IsActive, 
-                    CreatedDate, 
-                    UpdatedDate, 
-                    'Passenger' AS Type, 
-                    Version
-                FROM Passengers");
+            SELECT 
+                Id, 
+                FirstName, 
+                LastName, 
+                Email, 
+                PhoneNumber, 
+                Country, 
+                State, 
+                Rating, 
+                IsActive, 
+                CreatedDate, 
+                UpdatedDate, 
+                'Passenger' AS Type, 
+                Version
+            FROM Passengers");
 
         return passengers;
     }
@@ -43,22 +43,22 @@ public sealed class PassengerRepository : IPassengerRepository
         using var connection = SqlConnectionBuilder.GetConnection(_configuration);
 
         var passenger = await connection.QuerySingleOrDefaultAsync<Passenger>(@"
-                SELECT 
-                    Id, 
-                    FirstName, 
-                    LastName, 
-                    Email, 
-                    PhoneNumber, 
-                    Country, 
-                    State, 
-                    Rating, 
-                    IsActive, 
-                    CreatedDate, 
-                    UpdatedDate, 
-                    'Passenger' AS Type, 
-                    Version
-                FROM Passengers
-                WHERE Id = @Id",
+            SELECT 
+                Id, 
+                FirstName, 
+                LastName, 
+                Email, 
+                PhoneNumber, 
+                Country, 
+                State, 
+                Rating, 
+                IsActive, 
+                CreatedDate, 
+                UpdatedDate, 
+                'Passenger' AS Type, 
+                Version
+            FROM Passengers
+            WHERE Id = @Id",
             new { Id = id });
 
         if (passenger == null)
@@ -74,8 +74,6 @@ public sealed class PassengerRepository : IPassengerRepository
 
     public async Task<string> Create(Passenger passenger)
     {
-        using var connection = SqlConnectionBuilder.GetConnection(_configuration);
-
         // Generate new ID if not provided
         if (string.IsNullOrEmpty(passenger.Id))
         {
@@ -85,34 +83,37 @@ public sealed class PassengerRepository : IPassengerRepository
         passenger.CreatedDate = DateTime.UtcNow;
         passenger.UpdatedDate = passenger.CreatedDate;
 
+        using var connection = SqlConnectionBuilder.GetConnection(_configuration);
+        connection.Open();
+
         await connection.ExecuteAsync(@"
-                INSERT INTO Passengers (
-                    Id, 
-                    FirstName, 
-                    LastName, 
-                    Email, 
-                    PhoneNumber, 
-                    Country, 
-                    State, 
-                    Rating, 
-                    IsActive, 
-                    CreatedDate, 
-                    UpdatedDate, 
-                    Version
-                ) VALUES (
-                    @Id, 
-                    @FirstName, 
-                    @LastName, 
-                    @Email, 
-                    @PhoneNumber, 
-                    @Country, 
-                    @State, 
-                    @Rating, 
-                    @IsActive, 
-                    @CreatedDate, 
-                    @UpdatedDate, 
-                    @Version
-                )",
+            INSERT INTO Passengers (
+                Id, 
+                FirstName, 
+                LastName, 
+                Email, 
+                PhoneNumber, 
+                Country, 
+                State, 
+                Rating, 
+                IsActive, 
+                CreatedDate, 
+                UpdatedDate, 
+                Version
+            ) VALUES (
+                @Id, 
+                @FirstName, 
+                @LastName, 
+                @Email, 
+                @PhoneNumber, 
+                @Country, 
+                @State, 
+                @Rating, 
+                @IsActive, 
+                @CreatedDate, 
+                @UpdatedDate, 
+                @Version
+            )",
             passenger);
 
         return passenger.Id;
@@ -120,10 +121,11 @@ public sealed class PassengerRepository : IPassengerRepository
 
     public async Task<Passenger> Update(string id, Passenger passenger)
     {
-        using var connection = SqlConnectionBuilder.GetConnection(_configuration);
-
         passenger.Id = id.ToLower();
         passenger.UpdatedDate = DateTime.UtcNow;
+
+        using var connection = SqlConnectionBuilder.GetConnection(_configuration);
+        connection.Open();
 
         // Check if passenger exists
         var exists = await connection.ExecuteScalarAsync<bool>(
@@ -137,18 +139,18 @@ public sealed class PassengerRepository : IPassengerRepository
 
         // Update passenger
         await connection.ExecuteAsync(@"
-                UPDATE Passengers SET
-                    FirstName = @FirstName,
-                    LastName = @LastName,
-                    Email = @Email,
-                    PhoneNumber = @PhoneNumber,
-                    Country = @Country,
-                    State = @State,
-                    Rating = @Rating,
-                    IsActive = @IsActive,
-                    UpdatedDate = @UpdatedDate,
-                    Version = @Version
-                WHERE Id = @Id",
+            UPDATE Passengers SET
+                FirstName = @FirstName,
+                LastName = @LastName,
+                Email = @Email,
+                PhoneNumber = @PhoneNumber,
+                Country = @Country,
+                State = @State,
+                Rating = @Rating,
+                IsActive = @IsActive,
+                UpdatedDate = @UpdatedDate,
+                Version = @Version
+            WHERE Id = @Id",
             passenger);
 
         // Set partition key for compatibility with CosmosDB implementation
@@ -160,6 +162,7 @@ public sealed class PassengerRepository : IPassengerRepository
     public async Task<bool> Delete(string id)
     {
         using var connection = SqlConnectionBuilder.GetConnection(_configuration);
+        connection.Open();
 
         // Check if passenger exists
         var exists = await connection.ExecuteScalarAsync<bool>(

@@ -52,8 +52,6 @@ DependencyInjection.Register(builder.Services);
 
 var app = builder.Build();
 
-await Initialization.InitializeDatabase(app.Configuration);
-
 // Configure the HTTP request pipeline
 app.UseMetricServer();
 

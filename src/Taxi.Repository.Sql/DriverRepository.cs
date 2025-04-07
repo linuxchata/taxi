@@ -19,35 +19,35 @@ public sealed class DriverRepository : IDriverRepository
         using var connection = SqlConnectionBuilder.GetConnection(_configuration);
 
         var drivers = await connection.QueryAsync<Driver>(@"
-                SELECT 
-                    Id, 
-                    FirstName, 
-                    LastName, 
-                    Email, 
-                    PhoneNumber, 
-                    Country, 
-                    State, 
-                    Rating, 
-                    IsActive, 
-                    IsApproved, 
-                    CreatedDate, 
-                    UpdatedDate, 
-                    'Driver' AS Type, 
-                    Version
-                FROM Drivers");
+            SELECT 
+                Id, 
+                FirstName, 
+                LastName, 
+                Email, 
+                PhoneNumber, 
+                Country, 
+                State, 
+                Rating, 
+                IsActive, 
+                IsApproved, 
+                CreatedDate, 
+                UpdatedDate, 
+                'Driver' AS Type, 
+                Version
+            FROM Drivers");
 
         // Get vehicles for each driver
         foreach (var driver in drivers)
         {
             var vehicles = await connection.QueryAsync<DriverVehicle>(@"
-                    SELECT 
-                        Id, 
-                        VehicleType, 
-                        Model, 
-                        RegistrationNumber, 
-                        Color
-                    FROM DriverVehicles
-                    WHERE DriverId = @DriverId",
+                SELECT 
+                    Id, 
+                    VehicleType, 
+                    Model, 
+                    RegistrationNumber, 
+                    Color
+                FROM DriverVehicles
+                WHERE DriverId = @DriverId",
                 new { DriverId = driver.Id });
 
             driver.Vehicles = vehicles;
@@ -61,7 +61,68 @@ public sealed class DriverRepository : IDriverRepository
         using var connection = SqlConnectionBuilder.GetConnection(_configuration);
 
         var driver = await connection.QuerySingleOrDefaultAsync<Driver>(@"
-                SELECT 
+            SELECT 
+                Id, 
+                FirstName, 
+                LastName, 
+                Email, 
+                PhoneNumber, 
+                Country, 
+                State, 
+                Rating, 
+                IsActive, 
+                IsApproved, 
+                CreatedDate, 
+                UpdatedDate, 
+                'Driver' AS Type, 
+                Version
+            FROM Drivers
+            WHERE Id = @Id",
+            new { Id = id });
+
+        if (driver == null)
+        {
+            return null!;
+        }
+
+        // Get vehicles for the driver
+        var vehicles = await connection.QueryAsync<DriverVehicle>(@"
+            SELECT 
+                Id, 
+                VehicleType, 
+                Model, 
+                RegistrationNumber, 
+                Color
+            FROM DriverVehicles
+            WHERE DriverId = @DriverId",
+            new { DriverId = id });
+
+        driver.Vehicles = vehicles;
+        driver.Pk = $"Driver:{driver.Id.ToLower()}"; // Set partition key for compatibility
+
+        return driver;
+    }
+
+    public async Task<string> Create(Driver driver)
+    {
+        // Generate new ID if not provided
+        if (string.IsNullOrEmpty(driver.Id))
+        {
+            driver.Id = Guid.NewGuid().ToString().ToLower();
+        }
+
+        driver.CreatedDate = DateTime.UtcNow;
+        driver.UpdatedDate = driver.CreatedDate;
+
+        using var connection = SqlConnectionBuilder.GetConnection(_configuration);
+        connection.Open();
+
+        using var transaction = connection.BeginTransaction();
+
+        try
+        {
+            await connection.ExecuteAsync(@"
+                INSERT INTO Drivers (
                     Id, 
                     FirstName, 
                     LastName, 
@@ -74,82 +135,22 @@ public sealed class DriverRepository : IDriverRepository
                     IsApproved, 
                     CreatedDate, 
                     UpdatedDate, 
-                    'Driver' AS Type, 
                     Version
-                FROM Drivers
-                WHERE Id = @Id",
-            new { Id = id });
-
-        if (driver == null)
-        {
-            return null!;
-        }
-
-        // Get vehicles for the driver
-        var vehicles = await connection.QueryAsync<DriverVehicle>(@"
-                SELECT 
-                    Id, 
-                    VehicleType, 
-                    Model, 
-                    RegistrationNumber, 
-                    Color
-                FROM DriverVehicles
-                WHERE DriverId = @DriverId",
-            new { DriverId = id });
-
-        driver.Vehicles = vehicles;
-        driver.Pk = $"Driver:{driver.Id.ToLower()}"; // Set partition key for compatibility
-
-        return driver;
-    }
-
-    public async Task<string> Create(Driver driver)
-    {
-        using var connection = SqlConnectionBuilder.GetConnection(_configuration);
-
-        // Generate new ID if not provided
-        if (string.IsNullOrEmpty(driver.Id))
-        {
-            driver.Id = Guid.NewGuid().ToString().ToLower();
-        }
-
-        driver.CreatedDate = DateTime.UtcNow;
-        driver.UpdatedDate = driver.CreatedDate;
-
-        using var transaction = connection.BeginTransaction();
-
-        try
-        {
-            await connection.ExecuteAsync(@"
-                    INSERT INTO Drivers (
-                        Id, 
-                        FirstName, 
-                        LastName, 
-                        Email, 
-                        PhoneNumber, 
-                        Country, 
-                        State, 
-                        Rating, 
-                        IsActive, 
-                        IsApproved, 
-                        CreatedDate, 
-                        UpdatedDate, 
-                        Version
-                    ) VALUES (
-                        @Id, 
-                        @FirstName, 
-                        @LastName, 
-                        @Email, 
-                        @PhoneNumber, 
-                        @Country, 
-                        @State, 
-                        @Rating, 
-                        @IsActive, 
-                        @IsApproved, 
-                        @CreatedDate, 
-                        @UpdatedDate, 
-                        @Version
-                    )",
+                ) VALUES (
+                    @Id, 
+                    @FirstName, 
+                    @LastName, 
+                    @Email, 
+                    @PhoneNumber, 
+                    @Country, 
+                    @State, 
+                    @Rating, 
+                    @IsActive, 
+                    @IsApproved, 
+                    @CreatedDate, 
+                    @UpdatedDate, 
+                    @Version
+                )",
                 driver,
                 transaction);
 
@@ -164,21 +165,21 @@ public sealed class DriverRepository : IDriverRepository
                     }
 
                     await connection.ExecuteAsync(@"
-                            INSERT INTO DriverVehicles (
-                                Id, 
-                                DriverId, 
-                                VehicleType, 
-                                Model, 
-                                RegistrationNumber, 
-                                Color
-                            ) VALUES (
-                                @Id, 
-                                @DriverId, 
-                                @VehicleType, 
-                                @Model, 
-                                @RegistrationNumber, 
-                                @Color
-                            )",
+                        INSERT INTO DriverVehicles (
+                            Id, 
+                            DriverId, 
+                            VehicleType, 
+                            Model, 
+                            RegistrationNumber, 
+                            Color
+                        ) VALUES (
+                            @Id, 
+                            @DriverId, 
+                            @VehicleType, 
+                            @Model, 
+                            @RegistrationNumber, 
+                            @Color
+                        )",
                         new
                         {
                             vehicle.Id,
@@ -204,10 +205,11 @@ public sealed class DriverRepository : IDriverRepository
 
     public async Task<Driver> Update(string id, Driver driver)
     {
-        using var connection = SqlConnectionBuilder.GetConnection(_configuration);
-
         driver.Id = id.ToLower();
         driver.UpdatedDate = DateTime.UtcNow;
+
+        using var connection = SqlConnectionBuilder.GetConnection(_configuration);
+        connection.Open();
 
         using var transaction = connection.BeginTransaction();
 
@@ -226,19 +228,19 @@ public sealed class DriverRepository : IDriverRepository
 
             // Update driver
             await connection.ExecuteAsync(@"
-                    UPDATE Drivers SET
-                        FirstName = @FirstName,
-                        LastName = @LastName,
-                        Email = @Email,
-                        PhoneNumber = @PhoneNumber,
-                        Country = @Country,
-                        State = @State,
-                        Rating = @Rating,
-                        IsActive = @IsActive,
-                        IsApproved = @IsApproved,
-                        UpdatedDate = @UpdatedDate,
-                        Version = @Version
-                    WHERE Id = @Id",
+                UPDATE Drivers SET
+                    FirstName = @FirstName,
+                    LastName = @LastName,
+                    Email = @Email,
+                    PhoneNumber = @PhoneNumber,
+                    Country = @Country,
+                    State = @State,
+                    Rating = @Rating,
+                    IsActive = @IsActive,
+                    IsApproved = @IsApproved,
+                    UpdatedDate = @UpdatedDate,
+                    Version = @Version
+                WHERE Id = @Id",
                 driver,
                 transaction);
 
@@ -259,21 +261,21 @@ public sealed class DriverRepository : IDriverRepository
                     }
 
                     await connection.ExecuteAsync(@"
-                            INSERT INTO DriverVehicles (
-                                Id, 
-                                DriverId, 
-                                VehicleType, 
-                                Model, 
-                                RegistrationNumber, 
-                                Color
-                            ) VALUES (
-                                @Id, 
-                                @DriverId, 
-                                @VehicleType, 
-                                @Model, 
-                                @RegistrationNumber, 
-                                @Color
-                            )",
+                        INSERT INTO DriverVehicles (
+                            Id, 
+                            DriverId, 
+                            VehicleType, 
+                            Model, 
+                            RegistrationNumber, 
+                            Color
+                        ) VALUES (
+                            @Id, 
+                            @DriverId, 
+                            @VehicleType, 
+                            @Model, 
+                            @RegistrationNumber, 
+                            @Color
+                        )",
                         new
                         {
                             vehicle.Id,
@@ -304,6 +306,7 @@ public sealed class DriverRepository : IDriverRepository
     public async Task<bool> Delete(string id)
     {
         using var connection = SqlConnectionBuilder.GetConnection(_configuration);
+        connection.Open();
 
         using var transaction = connection.BeginTransaction();
 
