@@ -20,7 +20,7 @@ public sealed class DriverRepository : IDriverRepository
 
         var drivers = await connection.QueryAsync<Driver>(@"
             SELECT 
-                Id, 
+                LOWER(CONVERT(NVARCHAR(36), Id)) AS Id, 
                 FirstName, 
                 LastName, 
                 Email, 
@@ -41,7 +41,7 @@ public sealed class DriverRepository : IDriverRepository
         {
             var vehicles = await connection.QueryAsync<DriverVehicle>(@"
                 SELECT 
-                    Id, 
+                    LOWER(CONVERT(NVARCHAR(36), Id)) AS Id, 
                     VehicleType, 
                     Model, 
                     RegistrationNumber, 
@@ -62,7 +62,7 @@ public sealed class DriverRepository : IDriverRepository
 
         var driver = await connection.QuerySingleOrDefaultAsync<Driver>(@"
             SELECT 
-                Id, 
+                LOWER(CONVERT(NVARCHAR(36), Id)) AS Id, 
                 FirstName, 
                 LastName, 
                 Email, 
@@ -88,7 +88,7 @@ public sealed class DriverRepository : IDriverRepository
         // Get vehicles for the driver
         var vehicles = await connection.QueryAsync<DriverVehicle>(@"
             SELECT 
-                Id, 
+                LOWER(CONVERT(NVARCHAR(36), Id)) AS Id, 
                 VehicleType, 
                 Model, 
                 RegistrationNumber, 

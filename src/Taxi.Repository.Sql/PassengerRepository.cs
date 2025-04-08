@@ -20,7 +20,7 @@ public sealed class PassengerRepository : IPassengerRepository
 
         var passengers = await connection.QueryAsync<Passenger>(@"
             SELECT 
-                Id, 
+                LOWER(CONVERT(NVARCHAR(36), Id)) AS Id, 
                 FirstName, 
                 LastName, 
                 Email, 
@@ -44,7 +44,7 @@ public sealed class PassengerRepository : IPassengerRepository
 
         var passenger = await connection.QuerySingleOrDefaultAsync<Passenger>(@"
             SELECT 
-                Id, 
+                LOWER(CONVERT(NVARCHAR(36), Id)) AS Id, 
                 FirstName, 
                 LastName, 
                 Email, 
