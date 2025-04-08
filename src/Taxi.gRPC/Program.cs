@@ -22,7 +22,7 @@ builder.Services.AddSwagger();
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<DependencyInjection>());
 
-Taxi.Repository.DependencyInjection.Register(builder.Services);
+Taxi.Repository.Sql.DependencyInjection.Register(builder.Services);
 
 var app = builder.Build();
 

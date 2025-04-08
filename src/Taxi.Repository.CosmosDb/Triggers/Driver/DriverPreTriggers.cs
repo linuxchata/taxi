@@ -1,9 +1,9 @@
-﻿namespace Taxi.Repository.Triggers.Driver
+﻿namespace Taxi.Repository.CosmosDb.Triggers.Driver
 {
-    internal static class PassengerPreTriggers
+    internal static class DriverPreTriggers
     {
-        internal const string ValidatePassengerPreTrigger = @"
-            function validatePassengerPreTrigger() {
+        internal const string ValidateDriverPreTrigger = @"
+            function validateDriverPreTrigger() {
                 var context = getContext();
                 var request = context.getRequest();
 
@@ -12,7 +12,7 @@
                 var isValid = itemToCreate.firstName && itemToCreate.lastName
 
                 if (!isValid) {
-                    throw new Error('Unable to create passenger due to failed validation');
+                    throw new Error('Unable to create driver due to failed validation');
                 }
             }";
     }

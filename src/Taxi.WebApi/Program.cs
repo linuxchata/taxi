@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
 using Prometheus;
-using Taxi.Repository;
+using Taxi.Repository.Sql;
 using Taxi.WebApi.Extensions;
 using Taxi.WebApi.ServiceCollectionExtensions;
 
@@ -51,8 +51,6 @@ builder.Services.AddFeatureManagement();
 DependencyInjection.Register(builder.Services);
 
 var app = builder.Build();
-
-await Initialization.Init(app.Configuration);
 
 // Configure the HTTP request pipeline
 app.UseMetricServer();
